@@ -4,9 +4,8 @@
 
 #include "core/process_input.h"
 #include "core/window_events.h"
-#include "core/update.h"
-#include "core/render.h"
 #include "microui_helpers.h"
+#include "microui_widgets.h"
 
 // states
 #include "states/game_play_state.h"
@@ -130,8 +129,13 @@ int main()
             engine_state->active_state.render(engine_state);
             /// ----------------------------------------------------
             ///
+
             // microui
-            window_microui(engine_state->ctx,engine_state->renderer,&engine_state->asset_manager);
+            if(engine_state->edit_menu){
+                window_microui(engine_state);
+                mu_widgets_extra_render(engine_state);
+            }
+
 
             // Swap the back buffer to the front
             SDL_RenderPresent(engine_state->renderer);

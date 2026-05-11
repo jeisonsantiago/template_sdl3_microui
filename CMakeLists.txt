@@ -28,6 +28,7 @@ include_directories(
     src/ecs
     src/state
     src/factories
+    src/widgets
     vendor/microui
 )
 
@@ -61,6 +62,8 @@ add_executable(TEMPLATE_C_SDL3
     vendor/microui/microui.h
     vendor/microui/microui.c
     src/core/microui_helpers.h src/core/microui_helpers.c
+    src/widgets/microui_widgets.h src/widgets/microui_widgets.c
+    src/widgets/microui_definitions.h
 )
 
 if(PRODUCTION_BUILD)

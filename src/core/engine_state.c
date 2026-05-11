@@ -57,6 +57,10 @@ void engine_state_initialize_graphics(EngineState *self){
 
     // player
     self->player_ref = null_entity();
+
+    //editor
+    self->edit_menu = true;
+    memset(self->selected_layer,0,sizeof(self->selected_layer));
 }
 
 void engine_state_init_microui(EngineState *self){
@@ -67,6 +71,10 @@ void engine_state_init_microui(EngineState *self){
     self->ctx->text_width = text_width;
 
     mu_begin(self->ctx);
+
+    // clear array self->pending_images
+    memset(self->pending_images,0,sizeof(self->pending_images));
+    self->pending_images_count = 0;
 }
 
 void engine_state_init(EngineState *self)
@@ -91,4 +99,33 @@ void engine_state_init(EngineState *self)
     game_state_init(&self->active_state);
     game_state_init(&self->gameplay);
     game_state_init(&self->menu);
+}
+
+// todo maybe update separate
+void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image)
+{
+
+    // SDL_Log("pending count:%i",engine_state->pending_images_count);
+
+    // do we have that image already?
+    for (int i = 0; i < engine_state->pending_images_count; ++i) {
+        if(pending_image.widget_id == engine_state->pending_images[i].widget_id){
+
+            engine_state->pending_images[i].destination_rect = pending_image.destination_rect;
+            engine_state->pending_images[i].mu_flags = pending_image.mu_flags;
+
+            // check hover
+            if(engine_state->pending_images[i].widget_id == engine_state->ctx->hover ){
+
+            }
+
+            // just check the state and update -> return
+
+            return;
+        }
+    }
+
+
+    // if not put in the array to be renderef after
+    engine_state->pending_images[engine_state->pending_images_count++] = pending_image;
 }

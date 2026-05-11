@@ -1,7 +1,5 @@
 #include "process_input.h"
 #include "microui_helpers.h"
-#include "camera.h"
-
 
 void process_input(SDL_Event *event, EngineState *state)
 {
@@ -11,6 +9,13 @@ void process_input(SDL_Event *event, EngineState *state)
     case SDL_EVENT_QUIT:
         state->is_running = false;
         break;
+    case SDL_EVENT_KEY_DOWN: {
+        if (event->key.repeat) break; // ignore held repeats
+        if (event->key.scancode == SDL_SCANCODE_F10) {
+            state->edit_menu = !state->edit_menu;
+        }
+        break;
+    }
     case SDL_EVENT_MOUSE_MOTION:{
         break;
     }

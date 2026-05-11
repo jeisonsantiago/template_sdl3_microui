@@ -10,7 +10,6 @@ typedef struct {
     int tile_count;
 }TextureAsset;
 
-
 //anonymous struct inside a union
 typedef union{
     struct{
@@ -28,5 +27,8 @@ typedef union{
 void asset_manager_init(AssetManager *self);
 
 void asset_manager_load_all(AssetManager *self, SDL_Renderer *renderer);
+
+// getSourceRectangleByIndex
+SDL_FRect asset_manager_get_texture_rect_by_index(int index, TextureAsset *texture_asset);
 
 #endif // ASSET_MANAGER_H

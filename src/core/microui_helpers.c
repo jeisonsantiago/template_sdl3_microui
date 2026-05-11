@@ -1,5 +1,7 @@
 #include "microui_helpers.h"
 
+#include "microui_widgets.h"
+
 int text_width(mu_Font font, const char *text, int len) {
     int res = 0;
     for (const char *p = text; *p && len--; p++) {
@@ -18,20 +20,99 @@ int min(int a, int b) {
     return a < b ? a : b;
 }
 
-void window_microui(mu_Context *ctx, SDL_Renderer *renderer, AssetManager *asset_manager)
-{
-    mu_begin(ctx);
-    if(mu_begin_window(ctx,"test",mu_rect(10,10,300,400))){
-        // process ui
-        if (mu_button(ctx, "My Button")) {
-            SDL_Log("TEST!");
+int sum(int *arr, size_t lenght){
+
+    int res = 0;
+    for (int i = 0; i < lenght; ++i) {
+        res += arr[i];
+    }
+
+    return res;
+}
+
+void microui_editor(EngineState *engine_state){
+
+    mu_Context *ctx = engine_state->ctx;
+
+    mu_layout_row(ctx, 2, (int[]) { 46, -1 }, 0);
+    // mu_layout_begin_column(ctx);
+    mu_label(ctx, "Zoom:");   mu_slider(ctx, &engine_state->camera.zoom, 0, 255);
+    // mu_layout_end_column(ctx);
+
+    mu_label(ctx, ""); // spacer
+
+    // mu_header_ex(ctx,"tesrt",MU_OPT_EXPANDED);
+    if (mu_header_ex(ctx, " Layers:",MU_OPT_EXPANDED)) {
+        static int select[3] = { 0, 0, 0 };
+        select[0] = mu_checkbox(ctx, "Ground", &engine_state->selected_layer[0]);
+        select[1] = mu_checkbox(ctx, "Solids", &engine_state->selected_layer[1]);
+        select[2] = mu_checkbox(ctx, "Decorations", &engine_state->selected_layer[2]);
+
+        if(sum(select,3) != 0){
+            for (int i = 0; i < 3; ++i) {
+                engine_state->selected_layer[i] = 0;
+                if(select[i] != 0){
+                    engine_state->selected_layer[i] = 1;
+                }
+            }
         }
+    }
+
+
+    mu_label(ctx, ""); // spacer
+    mu_label(ctx, "Tile Selection:");
+
+    int size = 25;
+
+    // mu_extra_image_rect(
+    //             ctx,
+    //             engine_state,
+    //             asset_manager_get_texture_rect_by_index(0,&engine_state->asset_manager.world),
+    //             size,
+    //             size,
+    //             engine_state->asset_manager.world.texture,
+    //             0
+    //             );
+
+    mu_label(ctx, ""); // spacer
+
+    // // get texture count (how many tiles)
+    // int texture_count = engine_state->asset_manager.world.tile_count;
+
+    // mu_layout_begin_column(ctx);
+    // mu_layout_row(ctx, 10, (int[]) { size,size,size,size,size,size,size,size,size,size }, size);
+    // for (int i = 0; i < texture_count; ++i) {
+    //     if(mu_extra_image_button(
+    //                 ctx,
+    //                 engine_state,
+    //                 asset_manager_get_texture_rect_by_index(i,&engine_state->asset_manager.world),
+    //                 size,
+    //                 size,
+    //                 engine_state->asset_manager.world.texture,
+    //                 i)
+    //             ){
+    //     }
+    // }
+    // mu_layout_end_column(ctx);
+
+
+}
+
+void window_microui(EngineState *engine_state)
+{
+    mu_Context *ctx = engine_state->ctx;
+    SDL_Renderer *renderer = engine_state->renderer;
+
+    mu_begin(ctx);
+    if(mu_begin_window(ctx,"Editor",mu_rect(10,10,300,400))){
+        // process ui
+        microui_editor(engine_state);
         mu_end_window(ctx);
     }
 
     mu_end(ctx);
 
-    SDL_Texture *tex = asset_manager->microui.texture;
+    SDL_Texture *tex = engine_state->asset_manager.microui.texture;
 
     // SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
     // SDL_RenderClear(renderer);

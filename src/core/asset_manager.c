@@ -4,9 +4,13 @@
 #include "atlas.inl"
 
 void update_tile_count(TextureAsset *texture_asset){
-    texture_asset->tile_count_rows = (int)texture_asset->texture->h / 16;
     texture_asset->tile_count_cols = (int)texture_asset->texture->w / 16;
+    texture_asset->tile_count_rows = (int)texture_asset->texture->h / 16;
     texture_asset->tile_count =  texture_asset->tile_count_rows * texture_asset->tile_count_cols;
+
+    texture_asset->tile_size_w = 16;
+    texture_asset->tile_size_h = 16;
+
 }
 
 void asset_manager_init(AssetManager *self)
@@ -57,9 +61,34 @@ void asset_manager_load_all(AssetManager *self, SDL_Renderer *renderer)
     SDL_Surface *sur = SDL_CreateSurfaceFrom(128, 128, SDL_PIXELFORMAT_XRGB8888, pixels, 4 * 128);
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, sur);
     SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_ADD);
+    SDL_SetTextureScaleMode(tex,SDL_SCALEMODE_LINEAR);
+
     SDL_DestroySurface(sur);
     self->microui.texture = tex;
 
 
     // this->pixelFont = LoadFont(RESOURCES_PATH "/fonts/pixantiqua.ttf");
+}
+
+SDL_FRect asset_manager_get_texture_rect_by_index(int index, TextureAsset *texture_asset)
+{
+
+    // row    = index / width
+    // column = index % width
+    // index = (row * width) + column
+
+    SDL_FRect rect = {};
+    int tx_row = index / (texture_asset->texture->w / texture_asset->tile_size_w);
+    int tx_col = index % (texture_asset->texture->w / texture_asset->tile_size_h);
+
+    // TraceLog(LOG_INFO,"%i %i",txCol, txRow);
+
+    rect = (SDL_FRect){
+        .x = (float)tx_col * texture_asset->tile_size_w,
+        .y = (float)tx_row *  texture_asset->tile_size_h,
+        .w = (float)texture_asset->tile_size_w,
+        .h = (float)texture_asset->tile_size_h
+    };
+
+    return rect;
 }

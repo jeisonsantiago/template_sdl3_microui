@@ -3,6 +3,7 @@
 
 #include "atlas.inl"
 #include "asset_manager.h"
+#include "engine_state.h"
 
 static const char button_map[256] = {
   [ SDL_BUTTON_LEFT   & 0xff ] =  MU_MOUSE_LEFT,
@@ -27,7 +28,7 @@ int text_height(mu_Font font);
 
 // int min(int a, int b);
 
-void window_microui(mu_Context *ctx, SDL_Renderer *renderer, AssetManager *asset_manager);
+void window_microui(EngineState *engine_state);
 
 void microui_events(mu_Context *ctx, SDL_Event *event, SDL_Renderer *renderer);
 

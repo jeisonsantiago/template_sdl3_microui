@@ -922,7 +922,6 @@ int mu_number_ex(mu_Context *ctx, mu_Real *value, mu_Real step,
   return res;
 }
 
-
 static int header(mu_Context *ctx, const char *label, int istreenode, int opt) {
   mu_Rect r;
   int active, expanded;
