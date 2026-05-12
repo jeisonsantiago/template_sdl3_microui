@@ -26,7 +26,6 @@ void game_play_state_on_enter(void *data)
 void game_play_state_on_exit(void *data)
 {
     SDL_Log("[GamePlay On Exit State]");
-
 }
 
 void game_play_state_update(float dt, void *data)
@@ -36,21 +35,6 @@ void game_play_state_update(float dt, void *data)
 
     Entity *player = entity_manager_get_by_index(entity_manger,engine_state->player_ref.idx);
 
-    // if (!player) {
-    //     SDL_Log("player is NULL");
-    //     return;
-    // }
-    // SDL_Log("player pos: %f %f", player->pos.x, player->pos.y);
-    // SDL_Log("camera: %f %f", engine_state->camera.x, engine_state->camera.y);
-
-    // move player
-    // if(engine_state->input_state.active_actions[ACTION_MOVE_UP]){
-    //     SDL_Log("USE!");
-    // }
-    // engine_state->camera.x = player->pos.x;
-    // engine_state->camera.y = player->pos.y;
-
-    int aaa= 1;
     camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,0.12f);
     // engine_state->camera.x = player->pos.x;
     // engine_state->camera.y = player->pos.y;
@@ -124,5 +108,21 @@ void game_play_state_render(void *data)
 
         // render texture
         SDL_RenderTextureRotated(engine_state->renderer,tx,&src,&dest,0,&(SDL_FPoint){0,0},SDL_FLIP_NONE);
+    }
+
+    // editor mode
+    if(engine_state->edit_menu){
+
+        // float mousex = engine_state.ge;
+        // SDL_FRect r = {engine_state->world_tile_mouse.x,engine_state->world_tile_mouse.y,1,1};
+
+        // r.w = 16;
+        // r.y = 16;
+        // SDL_Log("%f %f",r.x,r.y);
+
+        SDL_FRect r ={engine_state->world_tile_mouse.x,engine_state->world_tile_mouse.y,camera->zoom,camera->zoom};
+
+        SDL_SetRenderDrawColor(engine_state->renderer, 255,100,100,255);
+        SDL_RenderRect(engine_state->renderer, &r);
     }
 }

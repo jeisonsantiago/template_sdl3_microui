@@ -60,42 +60,51 @@ void microui_editor(EngineState *engine_state){
 
 
     mu_label(ctx, ""); // spacer
-    mu_label(ctx, "Tile Selection:");
+
+
+    mu_label(ctx, "Selection:");
+
 
     int size = 25;
 
-    // mu_extra_image_rect(
-    //             ctx,
-    //             engine_state,
-    //             asset_manager_get_texture_rect_by_index(0,&engine_state->asset_manager.world),
-    //             size,
-    //             size,
-    //             engine_state->asset_manager.world.texture,
-    //             0
-    //             );
+    mu_layout_row(ctx, 2, (int[]) { 80 ,25 }, 0);
+    mu_label(ctx, "Selected Tile:");
+    mu_Rect r = mu_layout_next(ctx);
+    // mu_layout_end_column(ctx);
+    mu_draw_image(ctx,
+                  r,
+                  engine_state->asset_manager.world.texture,
+                  asset_manager_get_texture_rect_by_index(engine_state->selected_tile,&engine_state->asset_manager.world)
+                  );
 
-    mu_label(ctx, ""); // spacer
+    // mu_image(ctx,
+    //          engine_state->asset_manager.world.texture,
+    //          asset_manager_get_texture_rect_by_index(0,&engine_state->asset_manager.world),
+    //          100,100
+    //          );
 
     // // get texture count (how many tiles)
-    // int texture_count = engine_state->asset_manager.world.tile_count;
+    int texture_count = engine_state->asset_manager.world.tile_count;
 
-    // mu_layout_begin_column(ctx);
-    // mu_layout_row(ctx, 10, (int[]) { size,size,size,size,size,size,size,size,size,size }, size);
-    // for (int i = 0; i < texture_count; ++i) {
-    //     if(mu_extra_image_button(
-    //                 ctx,
-    //                 engine_state,
-    //                 asset_manager_get_texture_rect_by_index(i,&engine_state->asset_manager.world),
-    //                 size,
-    //                 size,
-    //                 engine_state->asset_manager.world.texture,
-    //                 i)
-    //             ){
-    //     }
-    // }
-    // mu_layout_end_column(ctx);
+    mu_layout_begin_column(ctx);
+    mu_layout_row(ctx, 10, (int[]) { size,size,size,size,size,size,size,size,size,size }, size);
+    for (int i = 0; i < texture_count; ++i) {
+        // mu_Rect r = mu_layout_next(ctx);
+        // mu_draw_image(ctx,
+        //               r,
+        //               engine_state->asset_manager.world.texture,
+        //               asset_manager_get_texture_rect_by_index(i,&engine_state->asset_manager.world)
+        //               );
 
+        SDL_Texture *tex = engine_state->asset_manager.world.texture;
+        SDL_FRect src = asset_manager_get_texture_rect_by_index(i,&engine_state->asset_manager.world);
 
+        if(mu_button_image(ctx,i,tex,src)){
+            // SDL_Log("index :%i",i);
+            engine_state->selected_tile = i;
+        }
+    }
+    mu_layout_end_column(ctx);
 }
 
 void window_microui(EngineState *engine_state)
@@ -105,7 +114,7 @@ void window_microui(EngineState *engine_state)
 
     mu_begin(ctx);
     if(mu_begin_window(ctx,"Editor",mu_rect(10,10,300,400))){
-        // process ui
+        // process ji
         microui_editor(engine_state);
         mu_end_window(ctx);
     }
@@ -193,6 +202,22 @@ void window_microui(EngineState *engine_state)
                 SDL_SetRenderClipRect(renderer, &clip);
             } else {
                 SDL_SetRenderClipRect(renderer, NULL);
+            }
+        }
+
+        // SDL RENDER IMAGE
+        if(cmd->type == MU_COMMAND_IMAGE) {
+            SDL_FRect rect;
+            rect.h = cmd->rect.rect.h;
+            rect.w = cmd->rect.rect.w;
+            rect.x = cmd->rect.rect.x;
+            rect.y = cmd->rect.rect.y;
+
+
+            SDL_RenderTexture(renderer,cmd->image.texture,&cmd->image.src,&rect);
+            if(cmd->image.flags & MU_SDL_HOVER){
+                SDL_SetRenderDrawColor(renderer, 255,100,100,255);
+                SDL_RenderRect(renderer, &rect);
             }
         }
     }

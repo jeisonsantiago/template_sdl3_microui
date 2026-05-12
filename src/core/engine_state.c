@@ -61,10 +61,12 @@ void engine_state_initialize_graphics(EngineState *self){
     //editor
     self->edit_menu = true;
     memset(self->selected_layer,0,sizeof(self->selected_layer));
+    self->selected_tile = 0;
 }
 
 void engine_state_init_microui(EngineState *self){
     self->ctx = malloc(sizeof(mu_Context));
+    // mu_init(self->ctx);
     mu_init(self->ctx);
 
     self->ctx->text_height = text_height;
@@ -75,6 +77,8 @@ void engine_state_init_microui(EngineState *self){
     // clear array self->pending_images
     memset(self->pending_images,0,sizeof(self->pending_images));
     self->pending_images_count = 0;
+
+
 }
 
 void engine_state_init(EngineState *self)

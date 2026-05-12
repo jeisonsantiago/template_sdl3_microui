@@ -42,11 +42,13 @@ typedef struct {
 
     // world mouse
     SDL_FPoint world_mouse;
+    SDL_FPoint world_tile_mouse;
 
     // microui
     mu_Context *ctx;
     bool edit_menu;
     int selected_layer[3];
+    int selected_tile;
 
     // micro ui variables
     PendingImage pending_images[MAX_PENDING_IMAGES];

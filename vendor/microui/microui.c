@@ -135,6 +135,7 @@ void mu_init(mu_Context *ctx) {
 }
 
 
+
 void mu_begin(mu_Context *ctx) {
   expect(ctx->text_width && ctx->text_height);
   ctx->command_list.idx = 0;
@@ -473,14 +474,12 @@ void mu_draw_rect(mu_Context *ctx, mu_Rect rect, mu_Color color) {
   }
 }
 
-
 void mu_draw_box(mu_Context *ctx, mu_Rect rect, mu_Color color) {
   mu_draw_rect(ctx, mu_rect(rect.x + 1, rect.y, rect.w - 2, 1), color);
   mu_draw_rect(ctx, mu_rect(rect.x + 1, rect.y + rect.h - 1, rect.w - 2, 1), color);
   mu_draw_rect(ctx, mu_rect(rect.x, rect.y, 1, rect.h), color);
   mu_draw_rect(ctx, mu_rect(rect.x + rect.w - 1, rect.y, 1, rect.h), color);
 }
-
 
 void mu_draw_text(mu_Context *ctx, mu_Font font, const char *str, int len,
   mu_Vec2 pos, mu_Color color)
@@ -1200,8 +1199,47 @@ void mu_begin_panel_ex(mu_Context *ctx, const char *name, int opt) {
   mu_push_clip_rect(ctx, cnt->body);
 }
 
-
 void mu_end_panel(mu_Context *ctx) {
   mu_pop_clip_rect(ctx);
   pop_container(ctx);
+}
+
+/*============================================================================
+** SDL RELATED
+**============================================================================*/
+
+
+void mu_draw_image(mu_Context *ctx, mu_Rect rect, SDL_Texture *texture, SDL_FRect src) {
+  mu_Command *cmd;
+  rect = intersect_rects(rect, mu_get_clip_rect(ctx));
+  if (rect.w > 0 && rect.h > 0) {
+    cmd = mu_push_command(ctx, MU_COMMAND_IMAGE, sizeof(mu_ImageCommand));
+    cmd->image.rect = rect;
+    cmd->image.texture = texture;
+    cmd->image.src = src;
+
+    /* handle hover */
+    cmd->image.flags = 0;
+    if(ctx->hover == ctx->last_id){
+        cmd->image.flags |= MU_SDL_HOVER;
+    }
+  }
+}
+
+int mu_button_image(mu_Context *ctx, int button_id, SDL_Texture *texture, SDL_FRect src){
+    int res = 0;
+    mu_Id id = mu_get_id(ctx,&button_id,sizeof(button_id));
+    mu_Rect r = mu_layout_next(ctx);
+    mu_update_control(ctx, id, r, 0);
+
+
+    /* handle click */
+    if (ctx->mouse_pressed == MU_MOUSE_LEFT && ctx->focus == id) {
+      res |= MU_RES_SUBMIT;
+    }
+
+    /* draw frame and image */
+    mu_draw_control_frame(ctx, id, r, MU_COLOR_BUTTON, 0);
+    mu_draw_image(ctx,r,texture,src);
+    return res;
 }

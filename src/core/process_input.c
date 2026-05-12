@@ -17,6 +17,24 @@ void process_input(SDL_Event *event, EngineState *state)
         break;
     }
     case SDL_EVENT_MOUSE_MOTION:{
+        float lx, ly;
+        SDL_RenderCoordinatesFromWindow(state->renderer, event->motion.x, event->motion.y, &lx, &ly);
+        // state->world_tile_mouse.x = event->motion.x;
+        // state->world_tile_mouse.y = event->motion.y;
+
+
+        SDL_FPoint c = camera_screen_to_world_r(&state->camera,event->motion.x,event->motion.y);
+        // SDL_FPoint c = camera_world_to_screen_r(&state->camera,lx,ly);
+
+        state->world_tile_mouse.x = (int)SDL_floorf(c.x) * state->camera.zoom + state->camera.offset_x;
+        state->world_tile_mouse.y = (int)SDL_floorf(c.y) * state->camera.zoom + state->camera.offset_y;
+
+        // state->world_tile_mouse.x = (int)SDL_floorf(event->motion.x);
+        // state->world_tile_mouse.y = (int)SDL_floorf(event->motion.y);
+
+
+        SDL_Log("%f %f",state->world_tile_mouse.x,state->world_tile_mouse.y);
+
         break;
     }
     }

@@ -40,6 +40,12 @@ void process_window_events(SDL_Event *event, EngineState *state){
             // state->window_height   = h;
             // state->camera.offset_x = w * 0.5f;
             // state->camera.offset_y = h * 0.5f;
+            int new_width = event->window.data1;
+            int new_height = event->window.data2;
+
+            // update state
+            state->window_width = new_width;
+            state->window_height = new_height;
 
             // SDL_SetRenderLogicalPresentation(state->renderer, w, h, SDL_LOGICAL_PRESENTATION_LETTERBOX);
             SDL_SetRenderViewport(state->renderer, NULL);

@@ -40,6 +40,7 @@ enum {
   MU_COMMAND_RECT,
   MU_COMMAND_TEXT,
   MU_COMMAND_ICON,
+  MU_COMMAND_IMAGE,
   MU_COMMAND_MAX
 };
 
@@ -105,6 +106,10 @@ enum {
   MU_KEY_RETURN       = (1 << 4)
 };
 
+// SDL
+typedef enum {
+    MU_SDL_HOVER = (1 << 16),
+}mu_SDL_flags;
 
 typedef struct mu_Context mu_Context;
 typedef unsigned mu_Id;
@@ -123,6 +128,9 @@ typedef struct { mu_BaseCommand base; mu_Rect rect; mu_Color color; } mu_RectCom
 typedef struct { mu_BaseCommand base; mu_Font font; mu_Vec2 pos; mu_Color color; char str[1]; } mu_TextCommand;
 typedef struct { mu_BaseCommand base; mu_Rect rect; int id; mu_Color color; } mu_IconCommand;
 
+// SDL image
+typedef struct { mu_BaseCommand base; mu_Rect rect; SDL_Texture *texture; SDL_FRect src; int flags;} mu_ImageCommand;
+
 typedef union {
   int type;
   mu_BaseCommand base;
@@ -131,6 +139,7 @@ typedef union {
   mu_RectCommand rect;
   mu_TextCommand text;
   mu_IconCommand icon;
+  mu_ImageCommand image;
 } mu_Command;
 
 typedef struct {
@@ -210,6 +219,7 @@ struct mu_Context {
   int key_down;
   int key_pressed;
   char input_text[32];
+
 };
 
 
@@ -293,4 +303,8 @@ void mu_end_popup(mu_Context *ctx);
 void mu_begin_panel_ex(mu_Context *ctx, const char *name, int opt);
 void mu_end_panel(mu_Context *ctx);
 
+// SDL related
+void mu_init_sdl(mu_Context *ctx, SDL_Renderer *renderer);
+void mu_draw_image(mu_Context *ctx, mu_Rect rect, SDL_Texture *texture, SDL_FRect src);
+int mu_button_image(mu_Context *ctx, int button_id, SDL_Texture *texture, SDL_FRect src);
 #endif

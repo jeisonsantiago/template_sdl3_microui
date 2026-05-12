@@ -35,11 +35,11 @@ typedef struct {
 
     // collision related
     // std::function<void(int,int, EntityArray&)> on_collision_enter = nullptr;
-    void (*on_collion_enter)(int,int,void *entity_manager);
+    void (*on_collion_enter)(uint32_t,uint32_t,void *entity_manager);
     // std::function<void(int,int, EntityArray&)> on_collision_stay = nullptr;
-    void (*on_collion_stay)(int,int,void *entity_manager);
+    void (*on_collion_stay)(uint32_t,uint32_t,void *entity_manager);
     // std::function<void(int,int, EntityArray&)> on_collision_exit = nullptr;
-    void (*on_collion_exit)(int,int,void *entity_manager);
+    void (*on_collion_exit)(uint32_t,uint32_t,void *entity_manager);
 
     // bool has_child(int idx);
 }Entity;
