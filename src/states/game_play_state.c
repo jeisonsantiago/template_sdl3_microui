@@ -7,6 +7,9 @@
 #include "add_player.h"
 #include "add_tile.h"
 
+#include "process_input.h"
+#include "editor.h"
+
 void game_play_state_on_enter(void *data)
 {
     SDL_Log("[GamePlay On Enter State]");
@@ -35,6 +38,8 @@ void game_play_state_update(float dt, void *data)
 
     Entity *player = entity_manager_get_by_index(entity_manger,engine_state->player_ref.idx);
 
+    update_block_position(engine_state);
+
     camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,0.12f);
     // engine_state->camera.x = player->pos.x;
     // engine_state->camera.y = player->pos.y;
@@ -50,6 +55,7 @@ void game_play_state_update(float dt, void *data)
     if(engine_state->input_state.active_actions[ACTION_MOVE_RIGHT]){
         player->pos.x += 2 * dt;
     }
+
 }
 
 void game_play_state_render(void *data)
@@ -119,6 +125,7 @@ void game_play_state_render(void *data)
         // r.w = 16;
         // r.y = 16;
         // SDL_Log("%f %f",r.x,r.y);
+        // SDL_FRect c = camera_screen_to_world_r2(camera,)
 
         SDL_FRect r ={engine_state->world_tile_mouse.x,engine_state->world_tile_mouse.y,camera->zoom,camera->zoom};
 

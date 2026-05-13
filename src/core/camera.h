@@ -43,6 +43,14 @@ SDL_FPoint camera_screen_to_world_r(
     float screen_y
     );
 
+SDL_FPoint camera_screen_to_world_r2(
+    const Camera2D *self,
+    float screen_x,
+    float screen_y,
+    float world_x,
+    float world_y
+    );
+
 SDL_FPoint camera_world_to_screen_r(
         const Camera2D *self,
         float world_x,

@@ -45,10 +45,5 @@ typedef struct {
 }Entity;
 
 bool entity_valid(Entity *self);
-// operator bool() const{
-//     return kind != Kind::Nil;
-// }
-
-
 
 #endif // ENTITY_H

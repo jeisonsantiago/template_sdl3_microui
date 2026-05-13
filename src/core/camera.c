@@ -65,6 +65,34 @@ SDL_FPoint camera_screen_to_world_r(
     // return res;
 }
 
+SDL_FPoint camera_screen_to_world_r2(
+    const Camera2D *self,
+    float screen_x,
+    float screen_y,
+    float world_x,
+    float world_y
+    )
+{
+    // // reverse the screen center offset
+    // float relative_x = screen_x - self->offset_x;
+    // float relative_y = screen_y - self->offset_y;
+
+    // // reverse zoom
+    // relative_x /= self->zoom;
+    // relative_y /= self->zoom;
+
+    // SDL_FPoint res;
+    // // add camera position
+    // res.x = relative_x - self->x;
+    // res.y = relative_y - self->y;
+    return (SDL_FPoint){
+            .x = (screen_x - self->offset_x) / self->zoom + world_x,
+            .y = (screen_y - self->offset_y) / self->zoom + world_y,
+        };
+
+    // return res;
+}
+
 void camera_screen_to_world(
         const Camera2D *self,
         float screen_x,

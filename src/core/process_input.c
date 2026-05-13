@@ -1,9 +1,37 @@
 #include "process_input.h"
 #include "microui_helpers.h"
 
+#include "editor.h"
+
+void update_block_position(EngineState *state){
+
+    float mx, my;
+    SDL_GetMouseState(&mx, &my);
+
+    float lx, ly;
+    SDL_RenderCoordinatesFromWindow(state->renderer, mx, my, &lx, &ly);
+
+    SDL_FPoint world = camera_screen_to_world_r(&state->camera, lx, ly);
+
+    // snap to grid
+    float snapped_x = SDL_floorf(world.x);
+    float snapped_y = SDL_floorf(world.y);
+
+    SDL_FPoint screen = camera_world_to_screen_r(&state->camera, snapped_x, snapped_y);
+
+    state->world_tile_mouse.x= screen.x;
+    state->world_tile_mouse.y= screen.y;
+}
+
 void process_input(SDL_Event *event, EngineState *state)
 {
     // pool the operating system for events
+    // update_block_position(state);
+
+
+    if(state->edit_menu){
+        editor_events(event,state);
+    }
 
     switch (event->type) {
     case SDL_EVENT_QUIT:
@@ -17,23 +45,29 @@ void process_input(SDL_Event *event, EngineState *state)
         break;
     }
     case SDL_EVENT_MOUSE_MOTION:{
-        float lx, ly;
-        SDL_RenderCoordinatesFromWindow(state->renderer, event->motion.x, event->motion.y, &lx, &ly);
-        // state->world_tile_mouse.x = event->motion.x;
-        // state->world_tile_mouse.y = event->motion.y;
+        // block position
+        // Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(),gameData.camera);
+        // this->gameData.mouseWorldPos = worldPos;
+        // this->gameData.mouseBlockPos.x = (int)floor(worldPos.x);
+        // this->gameData.mouseBlockPos.y = (int)floor(worldPos.y);
+
+        // state->world_tile_mouse.x = (int)SDL_floorf(event->motion.x) * state->camera.zoom + (state->window_width * 0.5f);
+        // state->world_tile_mouse.y = (int)SDL_floorf(event->motion.y) * state->camera.zoom + (state->window_height * 0.5f);
+
+        // SDL_FPoint c = camera_screen_to_world_r(
+        //             &state->camera,
+        //             event->motion.x,
+        //             event->motion.y
+        //             );
+        // state->world_tile_mouse.x = (int)SDL_floorf(c.x) * (state->camera.zoom) + (state->window_width * 0.5f);
+        // state->world_tile_mouse.y = (int)SDL_floorf(c.y) * (state->camera.zoom) + (state->window_height * 0.5f);
+
+        // state->world_tile_mouse.x = (int)SDL_floorf(c.x) * (state->camera.zoom) + state->camera.offset_x;
+        // state->world_tile_mouse.y = (int)SDL_floorf(c.y) * (state->camera.zoom) + state->camera.offset_y;
+
+        // SDL_Log("%f %f",state->world_tile_mouse.x, state->world_tile_mouse.y);
 
 
-        SDL_FPoint c = camera_screen_to_world_r(&state->camera,event->motion.x,event->motion.y);
-        // SDL_FPoint c = camera_world_to_screen_r(&state->camera,lx,ly);
-
-        state->world_tile_mouse.x = (int)SDL_floorf(c.x) * state->camera.zoom + state->camera.offset_x;
-        state->world_tile_mouse.y = (int)SDL_floorf(c.y) * state->camera.zoom + state->camera.offset_y;
-
-        // state->world_tile_mouse.x = (int)SDL_floorf(event->motion.x);
-        // state->world_tile_mouse.y = (int)SDL_floorf(event->motion.y);
-
-
-        SDL_Log("%f %f",state->world_tile_mouse.x,state->world_tile_mouse.y);
 
         break;
     }

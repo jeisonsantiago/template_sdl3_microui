@@ -64,6 +64,7 @@ add_executable(TEMPLATE_C_SDL3
     src/core/microui_helpers.h src/core/microui_helpers.c
     src/widgets/microui_widgets.h src/widgets/microui_widgets.c
     src/widgets/microui_definitions.h
+    src/core/editor.h src/core/editor.c
 )
 
 if(PRODUCTION_BUILD)
