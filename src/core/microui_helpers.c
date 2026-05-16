@@ -1,6 +1,8 @@
 #include "microui_helpers.h"
 
 #include "microui_widgets.h"
+#include "core_helpers.h"
+#include "serialization_map.h"
 
 int text_width(mu_Font font, const char *text, int len) {
     int res = 0;
@@ -34,6 +36,13 @@ void microui_editor(EngineState *engine_state){
 
     mu_Context *ctx = engine_state->ctx;
 
+    mu_layout_row(ctx, 2, (int[]) { 80, -1 }, 0);
+    mu_label(ctx, "EntityCount:");
+
+    char number_buff[10];
+    core_int_to_str(number_buff,(int)engine_state->entity_manager.count);
+    mu_label(ctx, number_buff);
+
     mu_layout_row(ctx, 2, (int[]) { 46, -1 }, 0);
     // mu_layout_begin_column(ctx);
     mu_label(ctx, "Zoom:");   mu_slider(ctx, &engine_state->camera.zoom, 0, 255);
@@ -44,15 +53,15 @@ void microui_editor(EngineState *engine_state){
     // mu_header_ex(ctx,"tesrt",MU_OPT_EXPANDED);
     if (mu_header_ex(ctx, " Layers:",MU_OPT_EXPANDED)) {
         static int select[3] = { 0, 0, 0 };
-        select[0] = mu_checkbox(ctx, "Ground", &engine_state->selected_layer[0]);
-        select[1] = mu_checkbox(ctx, "Solids", &engine_state->selected_layer[1]);
-        select[2] = mu_checkbox(ctx, "Decorations", &engine_state->selected_layer[2]);
+        select[0] = mu_checkbox(ctx, "Ground", &engine_state->map_layers[0]);
+        select[1] = mu_checkbox(ctx, "Solids", &engine_state->map_layers[1]);
+        select[2] = mu_checkbox(ctx, "Decorations", &engine_state->map_layers[2]);
 
         if(sum(select,3) != 0){
             for (int i = 0; i < 3; ++i) {
-                engine_state->selected_layer[i] = 0;
+                engine_state->map_layers[i] = 0;
                 if(select[i] != 0){
-                    engine_state->selected_layer[i] = 1;
+                    engine_state->map_layers[i] = 1;
                 }
             }
         }
@@ -61,6 +70,21 @@ void microui_editor(EngineState *engine_state){
 
     mu_label(ctx, ""); // spacer
 
+    mu_layout_row(ctx, 3, (int[]) { 100 ,100,60}, 0);
+    mu_label(ctx, "Save Map to file:");
+
+    static char buf[128];
+    int submitted = 0;
+    mu_layout_row(ctx, 2, (int[]) { -70, -1 }, 0);
+    if (mu_textbox(ctx, buf, sizeof(buf)) & MU_RES_SUBMIT) {
+        mu_set_focus(ctx, ctx->last_id);
+        submitted = 1;
+    }
+    if (mu_button(ctx, "save")) { submitted = 1; }
+    if (submitted) {
+        // write_log(buf);
+        buf[0] = '\0';
+    }
 
     mu_label(ctx, "Selection:");
 
@@ -105,6 +129,8 @@ void microui_editor(EngineState *engine_state){
         }
     }
     mu_layout_end_column(ctx);
+
+
 }
 
 void window_microui(EngineState *engine_state)

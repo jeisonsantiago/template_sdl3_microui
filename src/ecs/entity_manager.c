@@ -60,8 +60,9 @@ EntityRef null_entity()
 void entity_manager_remove(EntityManager *self, EntityRef ref)
 {
     uint32_t index = deref(self,ref);
-    SDL_Log("REMOVE: %i %i %i",index, ref.idx, ref.gen);
+    // SDL_Log("REMOVE: %i %i %i",index, ref.idx, ref.gen);
     self->used[index] = false;
+    self->count--;
 }
 
 void entity_manager_clear(EntityManager *self)

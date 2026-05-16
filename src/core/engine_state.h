@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "input_state.h"
 #include "microui_definitions.h"
+#include "map.h"
 
 #define MAX_PENDING_IMAGES 1000
 
@@ -22,35 +23,40 @@ typedef struct {
 
     uint64_t previous_time;
 
+    EntityRef player_ref;
+
     // game state
     GameState gameplay;
     GameState menu;
-
     GameState active_state;
 
+    // assets and entities
     AssetManager asset_manager;
-
     EntityManager entity_manager;
 
+    // camera
     Camera2D camera;
 
-    EntityRef player_ref;
-
-    // inputs
+    // inputs ---------------------------------------
     InputState input_state;
     InputMapper input_mapper;
 
-    // world mouse
+    // world mouse ----------------------------------
     SDL_FPoint world_mouse;
-    SDL_FPoint world_tile_mouse;
+    SDL_FPoint screen_tile_mouse;
+    SDL_Point world_tile_mouse;
 
-    // microui
+    // world map
+    Map world_map;
+    char save_map_filename[200];
+
+    // microui --------------------------------------
     mu_Context *ctx;
     bool edit_menu;
-    int selected_layer[3];
+    int map_layers[3];
+    int selected_layer;
     int selected_tile;
 
-    // micro ui variables
     PendingImage pending_images[MAX_PENDING_IMAGES];
     int pending_images_count;
 
@@ -58,6 +64,6 @@ typedef struct {
 
 void engine_state_init(EngineState *self);
 
-void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image);
+// void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image);
 
 #endif // ENGINE_STATE_H

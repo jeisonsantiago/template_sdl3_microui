@@ -17,10 +17,13 @@ void update_block_position(EngineState *state){
     float snapped_x = SDL_floorf(world.x);
     float snapped_y = SDL_floorf(world.y);
 
+    state->world_tile_mouse.x = (int)snapped_x;
+    state->world_tile_mouse.y = (int)snapped_y;
+
     SDL_FPoint screen = camera_world_to_screen_r(&state->camera, snapped_x, snapped_y);
 
-    state->world_tile_mouse.x= screen.x;
-    state->world_tile_mouse.y= screen.y;
+    state->screen_tile_mouse.x= screen.x;
+    state->screen_tile_mouse.y= screen.y;
 }
 
 void process_input(SDL_Event *event, EngineState *state)

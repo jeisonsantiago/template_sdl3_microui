@@ -58,10 +58,15 @@ void engine_state_initialize_graphics(EngineState *self){
     // player
     self->player_ref = null_entity();
 
+    // world map
+    map_init(&self->world_map,5,5);
+
     //editor
     self->edit_menu = true;
-    memset(self->selected_layer,0,sizeof(self->selected_layer));
+    memset(self->map_layers,0,sizeof(self->map_layers));
+    self->map_layers[0] = 1;
     self->selected_tile = 0;
+    self->selected_layer = 0;
 }
 
 void engine_state_init_microui(EngineState *self){
@@ -106,30 +111,30 @@ void engine_state_init(EngineState *self)
 }
 
 // todo maybe update separate
-void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image)
-{
+// void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image)
+// {
 
-    // SDL_Log("pending count:%i",engine_state->pending_images_count);
+//     // SDL_Log("pending count:%i",engine_state->pending_images_count);
 
-    // do we have that image already?
-    for (int i = 0; i < engine_state->pending_images_count; ++i) {
-        if(pending_image.widget_id == engine_state->pending_images[i].widget_id){
+//     // do we have that image already?
+//     for (int i = 0; i < engine_state->pending_images_count; ++i) {
+//         if(pending_image.widget_id == engine_state->pending_images[i].widget_id){
 
-            engine_state->pending_images[i].destination_rect = pending_image.destination_rect;
-            engine_state->pending_images[i].mu_flags = pending_image.mu_flags;
+//             engine_state->pending_images[i].destination_rect = pending_image.destination_rect;
+//             engine_state->pending_images[i].mu_flags = pending_image.mu_flags;
 
-            // check hover
-            if(engine_state->pending_images[i].widget_id == engine_state->ctx->hover ){
+//             // check hover
+//             if(engine_state->pending_images[i].widget_id == engine_state->ctx->hover ){
 
-            }
+//             }
 
-            // just check the state and update -> return
+//             // just check the state and update -> return
 
-            return;
-        }
-    }
+//             return;
+//         }
+//     }
 
 
-    // if not put in the array to be renderef after
-    engine_state->pending_images[engine_state->pending_images_count++] = pending_image;
-}
+//     // if not put in the array to be renderef after
+//     engine_state->pending_images[engine_state->pending_images_count++] = pending_image;
+// }

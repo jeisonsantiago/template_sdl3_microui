@@ -1,6 +1,15 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+typedef enum{
+    RENDER_LAYER_GROUND,
+    RENDER_LAYER_SOLID,
+    RENDER_LAYER_DECORATION,
+    RENDER_LAYER_PLAYER,
+    RENDER_LAYER_ENEMY,
+    RENDER_LAYER_COUNT
+}RenderLayer;
+
 typedef struct {
     SDL_FPoint position;
 }TransformComponent;
@@ -19,7 +28,7 @@ typedef struct {
     int current_collisions[10];
     int current_collisions_count;
     int previous_collisions[10];
-    int previous_collisions_count;
+    // int previous_collisions_count;
 
 } ColliderComponent;
 
@@ -28,6 +37,7 @@ typedef struct {
     int asset_texture_index;
     int texture_index;
     float angle;
+    RenderLayer render_layer;
     // Vector2 render_origin = {0};
     // RenderLayer layer = RenderLayer::DEFAULT;
 }SpriteComponent;

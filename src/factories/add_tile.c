@@ -9,7 +9,7 @@ EntityRef add_tile(EntityManager *entity_manager, float x, float y)
 
     e->sprite.asset_texture_index = 0;
     e->sprite.texture_index = 0;
-
+    e->sprite.render_layer = RENDER_LAYER_GROUND;
 
     return ref;
 }

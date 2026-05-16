@@ -10,6 +10,7 @@ EntityRef add_player(EntityManager *entity_manager)
 
     e->sprite.asset_texture_index = 2;
     e->sprite.texture_index = 0;
+    e->sprite.render_layer = RENDER_LAYER_PLAYER;
 
     return ref;
 }

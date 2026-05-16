@@ -1,11 +1,9 @@
 #include <stdio.h>
 
 #include "core/engine_state.h"
-
 #include "core/process_input.h"
 #include "core/window_events.h"
 #include "microui_helpers.h"
-#include "microui_widgets.h"
 
 // states
 #include "states/game_play_state.h"
@@ -48,29 +46,10 @@ int main()
     // set gameplay to be the active state
     engine_state->active_state = engine_state->gameplay;
 
-
     // initialize current active state if set
     if(engine_state->active_state.on_enter){
         engine_state->active_state.on_enter(engine_state);
     }
-
-
-    // // microui
-    // unsigned char pixels[128*128*4];
-
-    // int c = 0;
-    // for(int i = 0; i < 128 * 128; i++) {
-    //     pixels[c] = atlas_texture[i];
-    //     pixels[c+1] = atlas_texture[i];
-    //     pixels[c+2] = atlas_texture[i];
-    //     pixels[c+3] = 255;
-    //     c+=4;
-    // }
-
-    // SDL_Surface *sur = SDL_CreateSurfaceFrom(128, 128, SDL_PIXELFORMAT_XRGB8888, pixels, 4 * 128);
-    // SDL_Texture *tex = SDL_CreateTextureFromSurface(engine_state->renderer, sur);
-    // microui end
-
 
     // main game loop
     while (engine_state->is_running) {
@@ -133,9 +112,8 @@ int main()
             // microui
             if(engine_state->edit_menu){
                 window_microui(engine_state);
-                mu_widgets_extra_render(engine_state);
+                // mu_widgets_extra_render(engine_state);
             }
-
 
             // Swap the back buffer to the front
             SDL_RenderPresent(engine_state->renderer);

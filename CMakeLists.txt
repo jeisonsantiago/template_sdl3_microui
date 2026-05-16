@@ -29,6 +29,9 @@ include_directories(
     src/state
     src/factories
     src/widgets
+    src/systems
+    src/world
+    src/serialization
     vendor/microui
 )
 
@@ -65,6 +68,10 @@ add_executable(TEMPLATE_C_SDL3
     src/widgets/microui_widgets.h src/widgets/microui_widgets.c
     src/widgets/microui_definitions.h
     src/core/editor.h src/core/editor.c
+    src/world/map.h src/world/map.c
+    src/systems/system_render_entities.h src/systems/system_render_entities.c
+    src/core/core_helpers.h src/core/core_helpers.c
+    src/serialization/serialization_map.h src/serialization/serialization_map.c
 )
 
 if(PRODUCTION_BUILD)

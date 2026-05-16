@@ -8,6 +8,10 @@ typedef struct {
     uint32_t gen;
 }EntityRef;
 
+bool entity_ref_valid(EntityRef ref);
+
+EntityRef invalid_entity_ref();
+
 typedef enum {
     KIND_NIL,
     KIND_PLAYER,
