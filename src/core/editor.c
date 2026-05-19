@@ -16,10 +16,9 @@ EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset
     return ref;
 }
 
-void editor_on_click(EngineState *engine_state)
+void editor_on_click_create_tile(EngineState *engine_state)
 {
     SDL_Point block_position = engine_state->world_tile_mouse;
-
 
     if(!map_is_inside(&engine_state->world_map,block_position.x, block_position.y)) {
         SDL_Log("Point is outside map boundaries (%i %i).",block_position.x, block_position.y);
@@ -32,15 +31,54 @@ void editor_on_click(EngineState *engine_state)
 
     // now check if there's something already in the block, if so delete it
     EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->selected_layer);
+
+
     if(entity_ref_valid(block_ref)){
-        entity_manager_remove(&engine_state->entity_manager,block_ref);
+
+        // entity_manager_remove(&engine_state->entity_manager,block_ref);
+        engine_state_queue_free_add(engine_state,block_ref);
+
         map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer);
         // SDL_Log("EXISTS BLOCK:%i %i", block_position.x,block_position.y);
     }
 
+    // if we are creating a tile it will set the world map
+    EntityRef created_ref = editor_add_tile(engine_state,block_position.x, block_position.y, 0 , selected_tile);
 
-    editor_add_tile(engine_state,block_position.x, block_position.y, 0 , selected_tile);
-    map_set(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer,block_ref);
+    // map_set(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer,created_ref);
+
+
+    SDL_Log("create: %i %i %u %u",block_position.x, block_position.y, created_ref.gen,created_ref.idx);
+}
+
+void editor_on_click_delete_tile(EngineState *engine_state)
+{
+    SDL_Point block_position = engine_state->world_tile_mouse;
+
+    if(!map_is_inside(&engine_state->world_map,block_position.x, block_position.y)) {
+        SDL_Log("Point is outside map boundaries (%i %i).",block_position.x, block_position.y);
+        return;
+    }
+
+    int selected_tile = engine_state->selected_tile;
+    // engine_state->selected_layer = (engine_state->selected_layer != 0)?engine_state->selected_layer:0;
+    engine_state->selected_layer = 0;
+
+    // now check if there's something already in the block, if so delete it
+    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->selected_layer);
+
+    if(entity_ref_valid(block_ref)){
+        SDL_Log("EXISTS BLOCK:%i %i", block_position.x,block_position.y);
+        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer);
+
+        // entity_manager_remove(&engine_state->entity_manager,block_ref);
+        engine_state_queue_free_add(engine_state,block_ref);
+
+        SDL_Log("delete: x:%i y:%i",block_position.x, block_position.y);
+        return;
+    }
+
+    SDL_Log("nothing to delete at: %i %i ",block_position.x, block_position.y);
 }
 
 void editor_events(SDL_Event *event, EngineState *engine_state)
@@ -49,8 +87,15 @@ void editor_events(SDL_Event *event, EngineState *engine_state)
 
     switch (event->type) {
     case SDL_EVENT_MOUSE_BUTTON_DOWN:{
-        editor_on_click(engine_state);
-        break;
+        if(event->button.button == SDL_BUTTON_LEFT){ // create tile
+            editor_on_click_create_tile(engine_state);
+            break;
+        }
+        if(event->button.button == SDL_BUTTON_RIGHT){ // delete tile
+            editor_on_click_delete_tile(engine_state);
+            break;
+        }
+
     }
     }
 }
@@ -76,6 +121,6 @@ void editor_render(EngineState *engine_state)
         SDL_SetRenderDrawColor(engine_state->renderer, 0,255,0,255);
         SDL_RenderRect(engine_state->renderer, &r);
     }
-
-
 }
+
+

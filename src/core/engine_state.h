@@ -34,6 +34,9 @@ typedef struct {
     AssetManager asset_manager;
     EntityManager entity_manager;
 
+    EntityRef entities_queue_free[MAX_ENTITIES];
+    int entities_queue_free_count;
+
     // camera
     Camera2D camera;
 
@@ -57,12 +60,14 @@ typedef struct {
     int selected_layer;
     int selected_tile;
 
-    PendingImage pending_images[MAX_PENDING_IMAGES];
-    int pending_images_count;
+    // PendingImage pending_images[MAX_PENDING_IMAGES];
+    // int pending_images_count;
 
 }EngineState;
 
 void engine_state_init(EngineState *self);
+
+void engine_state_queue_free_add(EngineState *self, EntityRef ref);
 
 // void engine_state_pending_images_add(EngineState *engine_state, PendingImage pending_image);
 

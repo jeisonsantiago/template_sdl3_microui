@@ -10,6 +10,9 @@
 #include "process_input.h"
 // #include "editor.h"
 #include "system_render_entities.h"
+#include "system_queue_free.h"
+
+#include "serialization_map.h"
 
 void game_play_state_on_enter(void *data)
 {
@@ -18,12 +21,12 @@ void game_play_state_on_enter(void *data)
     EngineState *engine_state = (EngineState *)data;
     EntityManager *entity_manger = &engine_state->entity_manager;
 
-    engine_state->player_ref = add_player(entity_manger);
+    // init world map
+    // map_init(&engine_state->world_map,5,5);
+    engine_state->player_ref = add_player(entity_manger,1,1);
 
-    // add_tile(entity_manger,1,1);
-    // add_tile(entity_manger,2,1);
-    // add_tile(entity_manger,3,1);
-    // add_tile(entity_manger,4,1);
+    // load map
+    serialization_load_map(engine_state,"map_01.bin");
 }
 
 void game_play_state_on_exit(void *data)
@@ -42,8 +45,10 @@ void game_play_state_update(float dt, void *data)
     update_block_position(engine_state);
 
     camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,0.12f);
+
     // engine_state->camera.x = player->pos.x;
     // engine_state->camera.y = player->pos.y;
+
     if(engine_state->input_state.active_actions[ACTION_MOVE_UP]){
         player->pos.y -= 2 * dt;
     }
@@ -56,6 +61,9 @@ void game_play_state_update(float dt, void *data)
     if(engine_state->input_state.active_actions[ACTION_MOVE_RIGHT]){
         player->pos.x += 2 * dt;
     }
+
+    // systems
+    system_queue_free(engine_state);
 }
 
 void game_play_state_render(void *data)
@@ -64,6 +72,7 @@ void game_play_state_render(void *data)
 
 
     system_render_entities(engine_state);
+    // system_render_entities_test(engine_state);
 
     // editor render
     editor_render(engine_state);

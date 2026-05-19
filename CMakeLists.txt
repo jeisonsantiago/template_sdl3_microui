@@ -72,6 +72,8 @@ add_executable(TEMPLATE_C_SDL3
     src/systems/system_render_entities.h src/systems/system_render_entities.c
     src/core/core_helpers.h src/core/core_helpers.c
     src/serialization/serialization_map.h src/serialization/serialization_map.c
+    src/systems/system_queue_free.h src/systems/system_queue_free.c
+
 )
 
 if(PRODUCTION_BUILD)

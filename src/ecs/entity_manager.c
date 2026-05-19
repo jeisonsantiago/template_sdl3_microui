@@ -1,37 +1,41 @@
 #include "entity_manager.h"
 
 uint32_t deref(EntityManager *self,EntityRef ref){
-    if(ref.idx > 0 && ref.idx < MAX_ENTITIES && self->used[ref.idx] && ref.gen == self->gen[ref.idx]){
+    if(ref.idx >= 0 && ref.idx < MAX_ENTITIES && self->used[ref.idx] && ref.gen == self->gen[ref.idx]){
         return ref.idx;
     }
 
-    return 0;
+    return INVALID_IDX;
 }
 
 uint32_t find_empty(EntityManager *self){
-    for (int i = 1; i < MAX_ENTITIES; ++i) {
+    for (int i = 0; i < MAX_ENTITIES; ++i) {
         if(!self->used[i]){
             return i;
         }
     }
 
-    return 0; // all being used
+    return INVALID_IDX; // all being used
 }
 
 void entity_manager_init(EntityManager *self){
-    self->count = 1;
-
-    memset(self->entities,0,sizeof(self->entities));
-    memset(self->used,0,sizeof(self->used));
-    memset(self->gen,0,sizeof(self->gen));
+    // self->count = 0;
+    // memset(self->entities,0,sizeof(self->entities));
+    // memset(self->used,0,sizeof(self->used));
+    // memset(self->gen,0,sizeof(self->gen));
+    memset(self,0,sizeof(EntityManager));
 }
 
 EntityRef entity_manager_add(EntityManager *self, Kind kind)
 {
     uint32_t slot = find_empty(self);
 
-    if(slot){
+    if(slot != INVALID_IDX){
         memset(&self->entities[slot],0,sizeof(Entity));
+
+        // on add
+        if (slot + 1 > self->highest_idx) self->highest_idx = slot + 1;
+
         self->entities[slot].kind = kind;
         self->used[slot] = true;
         self->gen[slot] += 1;
@@ -54,29 +58,31 @@ Entity *entity_manager_get(EntityManager *self, EntityRef ref){
 
 EntityRef null_entity()
 {
-    return (EntityRef){0,0};
+    return (EntityRef){INVALID_IDX,INVALID_IDX};
 }
 
 void entity_manager_remove(EntityManager *self, EntityRef ref)
 {
-    uint32_t index = deref(self,ref);
-    // SDL_Log("REMOVE: %i %i %i",index, ref.idx, ref.gen);
+    uint32_t index = deref(self,ref);    
     self->used[index] = false;
+    // self->entities[index].pos = (SDL_FPoint){1,1};
     self->count--;
+    SDL_Log("REMOVE ENTITY: %i\t count:%i",index,  self->count);
 }
 
 void entity_manager_clear(EntityManager *self)
 {
-    self->count = 1;
+    // self->count = 0;
 
-    memset(self->entities,0,sizeof(self->entities));
-    memset(self->used,0,sizeof(self->used));
-    memset(self->gen,0,sizeof(self->gen));
+    // memset(self->entities,0,sizeof(self->entities));
+    // memset(self->used,0,sizeof(self->used));
+    // memset(self->gen,0,sizeof(self->gen));
+    entity_manager_init(self);
 }
 
 Entity *entity_manager_get_by_index(EntityManager *self, uint32_t idx)
 {
-    if(idx > 0 && idx < MAX_ENTITIES){
+    if(idx >= 0 && idx < MAX_ENTITIES){
         return &self->entities[idx];
     }
 

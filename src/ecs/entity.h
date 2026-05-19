@@ -3,6 +3,8 @@
 
 #include "components.h"
 
+static const uint32_t INVALID_IDX = -1;
+
 typedef struct {
     uint32_t idx;
     uint32_t gen;

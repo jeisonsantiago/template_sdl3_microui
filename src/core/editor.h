@@ -5,7 +5,9 @@
 
 EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset_index, int texture_index);
 
-void editor_on_click(EngineState *engine_state);
+void editor_on_click_create_tile(EngineState *engine_state);
+
+void editor_on_click_delete_tile(EngineState *engine_state);
 
 void editor_events(SDL_Event *event, EngineState *engine_state);
 

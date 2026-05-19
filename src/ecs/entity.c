@@ -3,14 +3,14 @@
 
 bool entity_valid(Entity *self)
 {
-    return self->kind != KIND_NIL;
+    return (self->kind != KIND_NIL) ;
 }
 
 bool entity_ref_valid(EntityRef ref){
-    return (ref.gen != 0 && ref.idx > 0);
+    return (ref.idx != INVALID_IDX);
 }
 
 EntityRef invalid_entity_ref()
 {
-    return (EntityRef){0,0};
+    return (EntityRef){INVALID_IDX,INVALID_IDX};
 }

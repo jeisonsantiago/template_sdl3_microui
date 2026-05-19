@@ -7,6 +7,7 @@
 typedef struct{
     Entity          entities[MAX_ENTITIES];
     uint32_t        count;
+    uint32_t        highest_idx;
 
     bool            used[MAX_ENTITIES];
     uint32_t        gen[MAX_ENTITIES];

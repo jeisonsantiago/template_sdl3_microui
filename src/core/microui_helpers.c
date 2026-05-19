@@ -4,6 +4,7 @@
 #include "core_helpers.h"
 #include "serialization_map.h"
 
+
 int text_width(mu_Font font, const char *text, int len) {
     int res = 0;
     for (const char *p = text; *p && len--; p++) {
@@ -70,26 +71,21 @@ void microui_editor(EngineState *engine_state){
 
     mu_label(ctx, ""); // spacer
 
-    mu_layout_row(ctx, 3, (int[]) { 100 ,100,60}, 0);
-    mu_label(ctx, "Save Map to file:");
+    mu_label(ctx, "Save");
+    mu_layout_row(ctx, 2, (int[]) { 100 ,100}, 0);
 
-    static char buf[128];
-    int submitted = 0;
-    mu_layout_row(ctx, 2, (int[]) { -70, -1 }, 0);
-    if (mu_textbox(ctx, buf, sizeof(buf)) & MU_RES_SUBMIT) {
-        mu_set_focus(ctx, ctx->last_id);
-        submitted = 1;
+    if (mu_button(ctx, "Save Map")) {
+        serialization_save_map(engine_state,"map_01.bin");
     }
-    if (mu_button(ctx, "save")) { submitted = 1; }
-    if (submitted) {
-        // write_log(buf);
-        buf[0] = '\0';
+    if (mu_button(ctx, "Load Map")) {
+        serialization_load_map(engine_state,"map_01.bin");
     }
+
 
     mu_label(ctx, "Selection:");
 
 
-    int size = 25;
+    int size = 30;
 
     mu_layout_row(ctx, 2, (int[]) { 80 ,25 }, 0);
     mu_label(ctx, "Selected Tile:");
@@ -110,6 +106,18 @@ void microui_editor(EngineState *engine_state){
     // // get texture count (how many tiles)
     int texture_count = engine_state->asset_manager.world.tile_count;
 
+    //-----------------------------------------------------------------------------------
+    // mu_layout_begin_column(ctx);
+    // mu_layout_row(ctx, 1, (int[]) { 150 }, 10);
+    // for (int i = 0; i < engine_state->entity_manager.count; ++i) {
+    //     char c[200] = {0};
+    //     SDL_FPoint pos = engine_state->entity_manager.entities[i].pos;
+    //     sprintf(c,"e:%i  pos->(x:%2.2f y:%2.2f)",i,pos.x, pos.y);
+    //     mu_label(ctx,c);
+    // }
+    // mu_layout_end_column(ctx);
+    //-----------------------------------------------------------------------------------
+
     mu_layout_begin_column(ctx);
     mu_layout_row(ctx, 10, (int[]) { size,size,size,size,size,size,size,size,size,size }, size);
     for (int i = 0; i < texture_count; ++i) {
@@ -129,8 +137,6 @@ void microui_editor(EngineState *engine_state){
         }
     }
     mu_layout_end_column(ctx);
-
-
 }
 
 void window_microui(EngineState *engine_state)
