@@ -57,4 +57,9 @@ SDL_FPoint camera_world_to_screen_r(
         float world_y
         );
 
+void camera_teleport(
+        Camera2D *self,
+        float world_x,
+        float world_y);
+
 #endif // CAMERA_H

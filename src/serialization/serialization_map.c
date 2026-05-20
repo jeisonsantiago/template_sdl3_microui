@@ -72,6 +72,8 @@ int serialization_load_map(EngineState *engine_state, const char *file_name){
     fread(&VERSION,sizeof(VERSION),1,file);
 
     //set map
+    // clear map first
+    map_clear_data(map);
     fread(map,sizeof(Map),1,file);
 
     // now iterate over ref and entity and put them inside the entity_manager

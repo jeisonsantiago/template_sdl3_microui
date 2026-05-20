@@ -135,3 +135,9 @@ void camera_update_smooth_follow(Camera2D *self, float target_x, float target_y,
 float camera_world_to_screen_size(Camera2D *camera, float size){
     return size * camera->zoom;
 }
+
+void camera_teleport(Camera2D *self, float world_x, float world_y)
+{
+    self->x = world_x;
+    self->y = world_y;
+}

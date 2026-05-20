@@ -1,7 +1,7 @@
 #include "engine_state.h"
 
 #include "process_input.h"
-#include "microui_helpers.h"
+// #include "microui_helpers.h"
 
 void engine_state_initialize_graphics(EngineState *self){
 
@@ -68,14 +68,14 @@ void engine_state_initialize_graphics(EngineState *self){
 }
 
 void engine_state_init_microui(EngineState *self){
-    self->ctx = malloc(sizeof(mu_Context));
+    // self->ctx = malloc(sizeof(mu_Context));
+    // // mu_init(self->ctx);
     // mu_init(self->ctx);
-    mu_init(self->ctx);
 
-    self->ctx->text_height = text_height;
-    self->ctx->text_width = text_width;
+    // self->ctx->text_height = text_height;
+    // self->ctx->text_width = text_width;
 
-    mu_begin(self->ctx);
+    // mu_begin(self->ctx);
 
 
 }

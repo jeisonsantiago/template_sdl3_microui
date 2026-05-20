@@ -27,6 +27,8 @@ void game_play_state_on_enter(void *data)
 
     // load map
     serialization_load_map(engine_state,"map_01.bin");
+
+    camera_teleport(&engine_state->camera,1,1);
 }
 
 void game_play_state_on_exit(void *data)
@@ -69,7 +71,6 @@ void game_play_state_update(float dt, void *data)
 void game_play_state_render(void *data)
 {
     EngineState *engine_state = (EngineState *)data;
-
 
     system_render_entities(engine_state);
     // system_render_entities_test(engine_state);

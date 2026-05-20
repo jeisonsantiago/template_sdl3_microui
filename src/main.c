@@ -3,10 +3,11 @@
 #include "core/engine_state.h"
 #include "core/process_input.h"
 #include "core/window_events.h"
-#include "microui_helpers.h"
+// #include "microui_helpers.h"
 
 // states
 #include "states/game_play_state.h"
+
 
 #define PHYSICS_FPS 60.0
 #define FIXED_TIME_STEP (1.0 / PHYSICS_FPS)
@@ -17,6 +18,10 @@
 // define target fps
 #define TARGET_FPS 144.0
 #define TARGET_FPS_TIME_NS (NS_PER_SECOND / TARGET_FPS)
+
+// nuklear
+#include "gui_nuklear/nuklear_helpers.h"
+#include "nuklear_sdl3_renderer.h"
 
 int main()
 {
@@ -51,6 +56,9 @@ int main()
         engine_state->active_state.on_enter(engine_state);
     }
 
+    // init nuklear
+    nuklear_init(engine_state);
+
     // main game loop
     while (engine_state->is_running) {
 
@@ -76,6 +84,17 @@ int main()
         while(SDL_PollEvent(&event)){
             process_input(&event,engine_state);
             process_window_events(&event,engine_state);
+
+
+            // nuklear events
+            SDL_ConvertEventToRenderCoordinates(engine_state->renderer, &event);
+            nuklear_event(engine_state->nk_ctx,&event);
+        }
+
+        // nuklear update
+
+        if(engine_state->edit_menu){
+            nuklear_update(engine_state);
         }
 
         /// process raw input
@@ -110,9 +129,15 @@ int main()
             ///
 
             // microui
+            // if(engine_state->edit_menu){
+            //     window_microui(engine_state);
+            //     // mu_widgets_extra_render(engine_state);
+            // }
+
+            // nuklear GUI
             if(engine_state->edit_menu){
-                window_microui(engine_state);
-                // mu_widgets_extra_render(engine_state);
+                nk_sdl_render(engine_state->nk_ctx, engine_state->AA);
+                nk_sdl_update_TextInput(engine_state->nk_ctx);
             }
 
             // Swap the back buffer to the front
@@ -133,6 +158,10 @@ int main()
             // command to put the main tread to sleep
             SDL_DelayNS(sleep_time);
         }
+
+        if(engine_state->edit_menu){
+            nk_input_begin(engine_state->nk_ctx);
+        }
     }
 
     // on exit state
@@ -147,7 +176,13 @@ int main()
         SDL_DestroyWindow(engine_state->window);
     }
 
+    // nuklear
+    nk_input_end(engine_state->nk_ctx);
+    nk_sdl_shutdown(engine_state->nk_ctx);
+
     SDL_Quit();
+
+
 
     free(engine_state);
 

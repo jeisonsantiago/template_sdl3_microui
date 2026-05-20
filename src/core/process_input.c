@@ -1,5 +1,5 @@
 #include "process_input.h"
-#include "microui_helpers.h"
+// #include "microui_helpers.h"
 
 #include "editor.h"
 
@@ -75,7 +75,7 @@ void process_input(SDL_Event *event, EngineState *state)
         break;
     }
     }
-    microui_events(state->ctx,event, state->renderer);
+    // microui_events(state->ctx,event, state->renderer);
 }
 
 void input_init_defaults(InputMapper *input_mapper){

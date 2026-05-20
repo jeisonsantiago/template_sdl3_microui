@@ -43,6 +43,8 @@ void process_window_events(SDL_Event *event, EngineState *state){
             int new_width = event->window.data1;
             int new_height = event->window.data2;
 
+
+
             // update state
             state->window_width = new_width;
             state->window_height = new_height;

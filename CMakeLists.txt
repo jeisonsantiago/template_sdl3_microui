@@ -33,6 +33,7 @@ include_directories(
     src/world
     src/serialization
     vendor/microui
+    vendor/nuklear
 )
 
 add_executable(TEMPLATE_C_SDL3
@@ -62,17 +63,18 @@ add_executable(TEMPLATE_C_SDL3
     src/factories/add_tile.h src/factories/add_tile.c
 
     # microui
-    vendor/microui/microui.h
-    vendor/microui/microui.c
-    src/core/microui_helpers.h src/core/microui_helpers.c
-    src/widgets/microui_widgets.h src/widgets/microui_widgets.c
-    src/widgets/microui_definitions.h
+    # vendor/microui/microui.h
+    # vendor/microui/microui.c
+    # src/core/microui_helpers.h src/core/microui_helpers.c
+    # src/widgets/microui_widgets.h src/widgets/microui_widgets.c
+    # src/widgets/microui_definitions.h
     src/core/editor.h src/core/editor.c
     src/world/map.h src/world/map.c
     src/systems/system_render_entities.h src/systems/system_render_entities.c
     src/core/core_helpers.h src/core/core_helpers.c
     src/serialization/serialization_map.h src/serialization/serialization_map.c
     src/systems/system_queue_free.h src/systems/system_queue_free.c
+    src/gui_nuklear/nuklear_helpers.h src/gui_nuklear/nuklear_helpers.c
 
 )
 

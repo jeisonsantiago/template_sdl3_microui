@@ -7,8 +7,11 @@
 #include "../ecs/entity_manager.h"
 #include "camera.h"
 #include "input_state.h"
-#include "microui_definitions.h"
+// #include "microui_definitions.h"
 #include "map.h"
+
+#include "nuklear.h"
+
 
 #define MAX_PENDING_IMAGES 1000
 
@@ -54,11 +57,16 @@ typedef struct {
     char save_map_filename[200];
 
     // microui --------------------------------------
-    mu_Context *ctx;
+    // mu_Context *ctx;
     bool edit_menu;
     int map_layers[3];
     int selected_layer;
     int selected_tile;
+
+    // nuklear
+    struct nk_context *nk_ctx;
+    struct nk_colorf bg;
+    enum nk_anti_aliasing AA;
 
     // PendingImage pending_images[MAX_PENDING_IMAGES];
     // int pending_images_count;
