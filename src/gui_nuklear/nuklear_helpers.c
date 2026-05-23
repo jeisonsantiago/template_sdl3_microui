@@ -10,7 +10,6 @@
 
 #include "asset_manager.h"
 
-
 static char* nk_sdl_dtoa(char *str, double d)
 {
     NK_ASSERT(str);
@@ -54,8 +53,6 @@ void nuklear_init(EngineState *engine_state)
     engine_state->bg.g = 0.18f;
     engine_state->bg.b = 0.24f;
     engine_state->bg.a = 1.0f;
-    /* It's better to disable anti-aliasing when using small fonts */
-    // app->AA = NK_ANTI_ALIASING_OFF;
 
     // init input
     nk_input_begin(ctx);
@@ -87,23 +84,6 @@ static void ui_widget_centered(struct nk_context *ctx, float height)
     nk_layout_row(ctx, NK_DYNAMIC, height, 3, ratio);
     nk_spacing(ctx, 1);
 }
-
-// static struct nk_image sdl_image_load(TextureAsset *tx_asset)
-// {
-//     int x,y,n;
-//     // unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
-//     // glGenTextures(1, &tex);
-//     // glBindTexture(GL_TEXTURE_2D, tex);
-//     // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-//     // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-//     // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//     // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-//     // glGenerateMipmap(GL_TEXTURE_2D);
-//     // stbi_image_free(data);
-
-//     return nk_image_ptr(tx_asset->texture);
-// }
 
 static struct nk_image ui_image_from_texture(TextureAsset *texture_asset, struct nk_rect region){
     struct nk_image img = nk_subimage_ptr(
@@ -139,6 +119,11 @@ void nuklear_gui(EngineState *engine_state){
     static int op = EASY;
     static int property = 20;
 
+
+    ui_header(ctx,"Camera Zoom:");
+
+
+
     ui_header(ctx,"Layers:");
 
     int i = 0;
@@ -159,23 +144,29 @@ void nuklear_gui(EngineState *engine_state){
     nk_label(ctx,"Tile:",NK_TEXT_ALIGN_LEFT);
 
     // struct nk_image img = ui_image_from_texture(&engine_state->asset_manager.texture_assets[0],nk_rect(0,0,16,16));
-    struct nk_image img = ui_image_from_texture_ex(&engine_state->asset_manager.texture_assets[0],2);
+    struct nk_image img =
+            ui_image_from_texture_ex(
+                &engine_state->asset_manager.texture_assets[0],
+                engine_state->editor.selected_tile
+                );
 
 
     nk_image(ctx,img);
 
     //
     ui_header(ctx,"");
-    if (nk_tree_push(ctx, NK_TREE_NODE, "Tiles:", NK_MINIMIZED)) {
+    if (nk_tree_push(ctx, NK_TREE_NODE, "Tiles:", NK_MINIMIZED )) {
         nk_layout_row_static(ctx,40,40,10);
 
-        // if(nk_button_)
-        nk_image(ctx,img);
-        nk_image(ctx,img);
-        nk_image(ctx,img);
-        nk_image(ctx,img);
-        nk_image(ctx,img);
+        TextureAsset *tasset = &engine_state->asset_manager.texture_assets[0];
 
+        // if(nk_button_)
+        for (int i = 0; i < tasset->tile_count; ++i) {
+            struct nk_image img = ui_image_from_texture_ex(&engine_state->asset_manager.texture_assets[0],i);
+            if(nk_button_image(ctx,img)){
+                engine_state->editor.selected_tile = i;
+            }
+        }
         nk_tree_pop(ctx);
     }
 
@@ -224,7 +215,7 @@ void nuklear_update(EngineState *engine_state)
     struct nk_context *ctx = engine_state->nk_ctx;
     nk_input_end(ctx);
 
-    if (nk_begin(ctx, "Editor", nk_rect(50, 50, 300, 400),
+    if (nk_begin(ctx, "Editor", nk_rect(50, 50, 500, 400),
                  NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
                  NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
     {

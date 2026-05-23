@@ -60,11 +60,10 @@ void engine_state_initialize_graphics(EngineState *self){
 
 
     //editor
-    self->edit_menu = true;
-    memset(self->map_layers,0,sizeof(self->map_layers));
-    self->map_layers[0] = 1;
-    self->selected_tile = 0;
-    self->selected_layer = 0;
+    self->editor.is_editor = true;
+    // memset(self->map_layers,0,sizeof(self->map_layers));
+    self->editor.selected_tile = 0;
+    self->editor.selected_layer = 0;
 }
 
 void engine_state_init_microui(EngineState *self){
@@ -76,8 +75,6 @@ void engine_state_init_microui(EngineState *self){
     // self->ctx->text_width = text_width;
 
     // mu_begin(self->ctx);
-
-
 }
 
 void engine_state_init(EngineState *self)

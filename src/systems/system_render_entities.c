@@ -65,46 +65,41 @@ void system_render_entities(EngineState *engine_state){
 
 }
 
-// void system_render_entities_test(EngineState *engine_state){
+void system_render_entities_debug(EngineState *engine_state){
 
-//     // clear render_ref_vector_count
-//     // memset(&render_ref_vector_count,0,sizeof(render_ref_vector_count));
+    // clear render_ref_vector_count
+    // memset(&render_ref_vector_count,0,sizeof(render_ref_vector_count));
 
-//     EntityManager *entity_manager = &engine_state->entity_manager;
-//     Camera2D *camera = &engine_state->camera;
+    EntityManager *entity_manager = &engine_state->entity_manager;
+    Camera2D *camera = &engine_state->camera;
 
-//     // go over entities and put in the specfici pool layer
-//     for (int i = 0; i < entity_manager->highest_idx; ++i) {
-//         Entity *e = entity_manager_get_by_index(entity_manager,i);
+    // go over entities and put in the specfici pool layer
+    for (int i = 0; i < entity_manager->highest_idx; ++i) {
+        Entity *e = entity_manager_get_by_index(entity_manager,i);
 
-//         if(!engine_state->entity_manager.used[i]) continue;
+        if(!engine_state->entity_manager.used[i]) continue;
 
-//         // get Texture from entity
-//         SDL_Texture *tx = engine_state->asset_manager.texture_assets[e->sprite.asset_texture_index].texture;
+        // get screen point
+        SDL_FPoint screen_point =
+                camera_world_to_screen_r(
+                    // camera_screen_to_world_r(
+                    &engine_state->camera,
+                    e->pos.x,
+                    e->pos.y
+                    );
 
-//         // get screen point
-//         SDL_FPoint screen_point =
-//                 camera_world_to_screen_r(
-//                     // camera_screen_to_world_r(
-//                     &engine_state->camera,
-//                     e->pos.x,
-//                     e->pos.y
-//                     );
+        float size_w = camera_world_to_screen_size(&engine_state->camera,1);
+        float size_h = camera_world_to_screen_size(&engine_state->camera,1);
+        SDL_FRect render_debug_rect = {screen_point.x, screen_point.y, size_w,size_h};
 
-//         float size_w = camera_world_to_screen_size(&engine_state->camera,1);
-//         float size_h = camera_world_to_screen_size(&engine_state->camera,1);
+        // only if it's solid
+        // if(e.)
+        if(!e->collider.is_trigger){ // meant to be solid
+            SDL_SetRenderDrawColor(engine_state->renderer, 255,100,100,50);
+            SDL_RenderFillRect(engine_state->renderer,&render_debug_rect);
+        }
 
-//         SDL_FRect src = asset_manager_get_texture_rect_by_index(e->sprite.texture_index,&engine_state->asset_manager.texture_assets[e->sprite.asset_texture_index]);
-//         SDL_FRect dest = {
-//             screen_point.x - 0.5f,
-//             screen_point.y - 0.5f,
-//             size_w,
-//             size_h
-//         };
 
-//         // render texture
-//         SDL_RenderTextureRotated(engine_state->renderer,tx,&src,&dest,0,&(SDL_FPoint){0,0},SDL_FLIP_NONE);
+    }
 
-//     }
-
-// }
+}

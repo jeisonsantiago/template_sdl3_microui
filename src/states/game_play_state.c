@@ -75,6 +75,9 @@ void game_play_state_render(void *data)
     system_render_entities(engine_state);
     // system_render_entities_test(engine_state);
 
+    // debug render
+    system_render_entities_debug(engine_state);
+
     // editor render
     editor_render(engine_state);
 

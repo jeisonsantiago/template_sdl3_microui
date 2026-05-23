@@ -93,7 +93,7 @@ int main()
 
         // nuklear update
 
-        if(engine_state->edit_menu){
+        if(engine_state->editor.is_editor){
             nuklear_update(engine_state);
         }
 
@@ -135,7 +135,7 @@ int main()
             // }
 
             // nuklear GUI
-            if(engine_state->edit_menu){
+            if(engine_state->editor.is_editor){
                 nk_sdl_render(engine_state->nk_ctx, engine_state->AA);
                 nk_sdl_update_TextInput(engine_state->nk_ctx);
             }
@@ -159,7 +159,7 @@ int main()
             SDL_DelayNS(sleep_time);
         }
 
-        if(engine_state->edit_menu){
+        if(engine_state->editor.is_editor){
             nk_input_begin(engine_state->nk_ctx);
         }
     }

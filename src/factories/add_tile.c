@@ -11,5 +11,7 @@ EntityRef add_tile(EntityManager *entity_manager, float x, float y)
     e->sprite.texture_index = 0;
     e->sprite.render_layer = RENDER_LAYER_GROUND;
 
+    // e->collider.map_layer = map_layer;
+
     return ref;
 }

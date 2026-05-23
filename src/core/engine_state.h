@@ -12,8 +12,15 @@
 
 #include "nuklear.h"
 
+// #include "editor.h"
 
 #define MAX_PENDING_IMAGES 1000
+
+typedef struct{
+    bool is_editor;
+    int selected_layer;
+    int selected_tile;
+}Editor;
 
 typedef struct {
     bool is_running;
@@ -56,12 +63,12 @@ typedef struct {
     Map world_map;
     char save_map_filename[200];
 
-    // microui --------------------------------------
-    // mu_Context *ctx;
-    bool edit_menu;
-    int map_layers[3];
-    int selected_layer;
-    int selected_tile;
+    // editor vars --------------------------------------
+    Editor editor;
+    // bool edit_menu;
+    // int map_layers[3];
+    // int selected_layer;
+    // int selected_tile;
 
     // nuklear
     struct nk_context *nk_ctx;

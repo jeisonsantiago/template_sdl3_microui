@@ -11,7 +11,14 @@ EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset
     e->sprite.asset_texture_index = asset_index;
     e->sprite.texture_index = texture_index;
 
-    map_set(&engine_state->world_map,x,y,engine_state->selected_layer,ref);
+    // if layer is solid set collider
+    if(engine_state->editor.selected_layer == MAP_LAYER_SOLID){
+        e->collider.width = 16;
+        e->collider.height = 16;
+        e->collider.is_trigger = false;
+    }
+
+    map_set(&engine_state->world_map,x,y,engine_state->editor.selected_layer,ref);
 
     return ref;
 }
@@ -25,12 +32,12 @@ void editor_on_click_create_tile(EngineState *engine_state)
         return;
     }
 
-    int selected_tile = engine_state->selected_tile;
+    int selected_tile = engine_state->editor.selected_tile;
     // engine_state->selected_layer = (engine_state->selected_layer != 0)?engine_state->selected_layer:0;
-    engine_state->selected_layer = 0;
+    // engine_state->editor.selected_layer = 0;
 
     // now check if there's something already in the block, if so delete it
-    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->selected_layer);
+    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->editor.selected_layer);
 
 
     if(entity_ref_valid(block_ref)){
@@ -38,7 +45,7 @@ void editor_on_click_create_tile(EngineState *engine_state)
         // entity_manager_remove(&engine_state->entity_manager,block_ref);
         engine_state_queue_free_add(engine_state,block_ref);
 
-        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer);
+        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->editor.selected_layer);
         // SDL_Log("EXISTS BLOCK:%i %i", block_position.x,block_position.y);
     }
 
@@ -60,16 +67,16 @@ void editor_on_click_delete_tile(EngineState *engine_state)
         return;
     }
 
-    int selected_tile = engine_state->selected_tile;
+    int selected_tile = engine_state->editor.selected_tile;
     // engine_state->selected_layer = (engine_state->selected_layer != 0)?engine_state->selected_layer:0;
-    engine_state->selected_layer = 0;
+    // engine_state->editor.selected_layer = 0;
 
     // now check if there's something already in the block, if so delete it
-    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->selected_layer);
+    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->editor.selected_layer);
 
     if(entity_ref_valid(block_ref)){
         SDL_Log("EXISTS BLOCK:%i %i", block_position.x,block_position.y);
-        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer);
+        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->editor.selected_layer);
 
         // entity_manager_remove(&engine_state->entity_manager,block_ref);
         engine_state_queue_free_add(engine_state,block_ref);
@@ -83,7 +90,7 @@ void editor_on_click_delete_tile(EngineState *engine_state)
 
 void editor_events(SDL_Event *event, EngineState *engine_state)
 {
-    if(!engine_state->edit_menu) return;
+    if(!engine_state->editor.is_editor) return;
 
     switch (event->type) {
     case SDL_EVENT_MOUSE_BUTTON_DOWN:{
@@ -104,7 +111,7 @@ void editor_render(EngineState *engine_state)
 {
     Camera2D *camera = &engine_state->camera;
 
-    if(engine_state->edit_menu){
+    if(engine_state->editor.is_editor){
 
         SDL_FRect r ={engine_state->screen_tile_mouse.x,engine_state->screen_tile_mouse.y,camera->zoom,camera->zoom};
 

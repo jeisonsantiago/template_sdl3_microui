@@ -32,7 +32,7 @@ void process_input(SDL_Event *event, EngineState *state)
     // update_block_position(state);
 
 
-    if(state->edit_menu){
+    if(state->editor.is_editor){
         editor_events(event,state);
     }
 
@@ -43,7 +43,7 @@ void process_input(SDL_Event *event, EngineState *state)
     case SDL_EVENT_KEY_DOWN: {
         if (event->key.repeat) break; // ignore held repeats
         if (event->key.scancode == SDL_SCANCODE_F10) {
-            state->edit_menu = !state->edit_menu;
+            state->editor.is_editor = !state->editor.is_editor;
         }
         break;
     }

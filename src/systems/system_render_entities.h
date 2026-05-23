@@ -5,6 +5,7 @@
 
 void system_render_entities(EngineState *engine_state);
 // void system_render_entities_test(EngineState *engine_state);
+void system_render_entities_debug(EngineState *engine_state);
 
 
 #endif // SYSTEM_RENDER_ENTITIES_H
