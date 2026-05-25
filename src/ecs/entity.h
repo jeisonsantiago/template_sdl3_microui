@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "components.h"
+#include "core_definitions.h"
 
 static const uint32_t INVALID_IDX = -1;
 
@@ -14,25 +15,22 @@ bool entity_ref_valid(EntityRef ref);
 
 EntityRef invalid_entity_ref();
 
-typedef enum {
-    KIND_NIL,
-    KIND_PLAYER,
-    KIND_ENEMY,
-    KIND_WEAPON,
-    KIND_PARTICLE,
-    KIND_ITEM,
-    KIND_TILE,
-}Kind;
-
 typedef struct {
     Kind kind;
+
     SDL_FPoint pos;
+    SDL_FPoint previous_pos;
+
     bool active;
     bool queue_free;
+    MapLayer map_layer;
 
     // components
+    PhysicsComponent physics;
     ColliderComponent collider;
     SpriteComponent sprite;
+    HealthComponent health;
+    AttackComponent attack;
 
     EntityRef parent_ref;
     EntityRef first_child_ref;

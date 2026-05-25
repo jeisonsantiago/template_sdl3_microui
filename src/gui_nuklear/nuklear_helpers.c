@@ -9,6 +9,9 @@
 // #define WINDOW_HEIGHT 720
 
 #include "asset_manager.h"
+#include "editor.h"
+
+#include "serialization_map.h"
 
 static char* nk_sdl_dtoa(char *str, double d)
 {
@@ -115,27 +118,16 @@ void nuklear_gui(EngineState *engine_state){
 
     struct nk_context *ctx = engine_state->nk_ctx;
 
-    enum {EASY, HARD};
-    static int op = EASY;
-    static int property = 20;
-
-
     ui_header(ctx,"Camera Zoom:");
 
-
-
     ui_header(ctx,"Layers:");
-
     int i = 0;
-    static const char *items[] = {"GROUND","SOLID","DECORATION"};
-    static int selected_item = 0;
-
     ui_widget(ctx,30);
-    if (nk_combo_begin_label(ctx, items[selected_item], nk_vec2(nk_widget_width(ctx), 200))) {
+    if (nk_combo_begin_label(ctx, layer_to_string(engine_state->editor.selected_layer), nk_vec2(nk_widget_width(ctx), 200))) {
         nk_layout_row_dynamic(ctx, 35, 1);
-        for (i = 0; i < 3; ++i)
-            if (nk_combo_item_label(ctx, items[i], NK_TEXT_LEFT))
-                selected_item = i;
+        for (i = 0; i < MAP_LAYER_COUNT; ++i)
+            if (nk_combo_item_label(ctx, layer_to_string(i), NK_TEXT_LEFT))
+                engine_state->editor.selected_layer = i;
         nk_combo_end(ctx);
     }
 
@@ -171,6 +163,7 @@ void nuklear_gui(EngineState *engine_state){
     }
 
 
+
     // nk_menubar_begin(ctx);
     // {
     //     /* toolbar */
@@ -181,12 +174,17 @@ void nuklear_gui(EngineState *engine_state){
     // }
     // nk_menubar_end(ctx);
 
+    ui_header(ctx,"");
 
 
-    // nk_layout_row_static(ctx, 30, 80, 1);
-    // if (nk_button_label(ctx, "button")) {
-    //     SDL_Log("button pressed");
-    // }
+    nk_layout_row_static(ctx, 30, 80, 2);
+    if (nk_button_label(ctx, "Save Map")) {
+        SDL_Log("button pressed");
+        serialization_save_map(engine_state,"map_01.bin");
+    }
+    if (nk_button_label(ctx, "Load Map")) {
+        SDL_Log("button pressed");
+    }
 
     // nk_layout_row_dynamic(ctx, 30, 2);
     // if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;

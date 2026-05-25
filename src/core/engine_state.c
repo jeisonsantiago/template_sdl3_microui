@@ -48,6 +48,9 @@ void engine_state_initialize_graphics(EngineState *self){
     //keyboard
     input_init_defaults(&self->input_mapper);
 
+    //game map solid
+    self->solid_entities_count = 0;
+
     // camera
     self->camera.zoom = 16*4; // to set positioning 16 to 1
     self->camera.x = 0.0f;

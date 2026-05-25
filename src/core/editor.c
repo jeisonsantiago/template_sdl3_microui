@@ -1,6 +1,22 @@
 #include "editor.h"
 
-EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset_index, int texture_index)
+#include "map.h"
+
+#include "add_tile.h"
+
+const char *layer_to_string(MapLayer map_layer) {
+    switch (map_layer) {
+    case MAP_LAYER_GROUND:          return "GROUND";
+    case MAP_LAYER_SOLID:           return "SOLID";
+    case MAP_LAYER_DECORATION_BG:   return "DECORATION_BACKGROUND";
+    case MAP_LAYER_ACTORS:          return "ACTORS";
+    case MAP_LAYER_Y_SORT:          return "Y_SORT";
+    case MAP_LAYER_DECORATION_FG:   return "DECORATION_FOREGROUND";
+    default:                        return "UNKNOWN";
+    }
+}
+
+EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset_index, int texture_index, MapLayer map_layer)
 {
 
     EntityRef ref = entity_manager_add(&engine_state->entity_manager,KIND_TILE);
@@ -8,14 +24,21 @@ EntityRef editor_add_tile(EngineState *engine_state, float x, float y, int asset
 
     e->pos = (SDL_FPoint){x,y};
 
+    e->map_layer = map_layer;
+
+    e->collider.width = 1;
+    e->collider.height = 1;
+
     e->sprite.asset_texture_index = asset_index;
     e->sprite.texture_index = texture_index;
 
+
+
     // if layer is solid set collider
-    if(engine_state->editor.selected_layer == MAP_LAYER_SOLID){
-        e->collider.width = 16;
-        e->collider.height = 16;
-        e->collider.is_trigger = false;
+    if(e->map_layer == MAP_LAYER_SOLID){
+        // e->collider.width   = 1;
+        // e->collider.height  = 1;
+        // e->collider.is_trigger = false;
     }
 
     map_set(&engine_state->world_map,x,y,engine_state->editor.selected_layer,ref);
@@ -33,24 +56,22 @@ void editor_on_click_create_tile(EngineState *engine_state)
     }
 
     int selected_tile = engine_state->editor.selected_tile;
-    // engine_state->selected_layer = (engine_state->selected_layer != 0)?engine_state->selected_layer:0;
-    // engine_state->editor.selected_layer = 0;
+    int selected_layer = engine_state->editor.selected_layer;
 
     // now check if there's something already in the block, if so delete it
-    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,engine_state->editor.selected_layer);
-
+    EntityRef block_ref = map_get(&engine_state->world_map,block_position.x, block_position.y,selected_layer);
 
     if(entity_ref_valid(block_ref)){
 
         // entity_manager_remove(&engine_state->entity_manager,block_ref);
         engine_state_queue_free_add(engine_state,block_ref);
 
-        map_clear(&engine_state->world_map,block_position.x, block_position.y, engine_state->editor.selected_layer);
+        map_clear(&engine_state->world_map,block_position.x, block_position.y, selected_layer);
         // SDL_Log("EXISTS BLOCK:%i %i", block_position.x,block_position.y);
     }
 
     // if we are creating a tile it will set the world map
-    EntityRef created_ref = editor_add_tile(engine_state,block_position.x, block_position.y, 0 , selected_tile);
+    EntityRef created_ref = editor_add_tile(engine_state,block_position.x, block_position.y, 0 , selected_tile, engine_state->editor.selected_layer);
 
     // map_set(&engine_state->world_map,block_position.x, block_position.y, engine_state->selected_layer,created_ref);
 
@@ -102,7 +123,6 @@ void editor_events(SDL_Event *event, EngineState *engine_state)
             editor_on_click_delete_tile(engine_state);
             break;
         }
-
     }
     }
 }

@@ -1,7 +1,7 @@
 #include "system_render_entities.h"
 
-static EntityRef render_ref_vector[RENDER_LAYER_COUNT][MAX_ENTITIES];
-static int render_ref_vector_count[RENDER_LAYER_COUNT] = {0};
+static EntityRef render_ref_vector[MAP_LAYER_COUNT][MAX_ENTITIES / 2];
+static int render_ref_vector_count[MAP_LAYER_COUNT] = {0};
 
 void system_render_entities(EngineState *engine_state){
 
@@ -27,7 +27,7 @@ void system_render_entities(EngineState *engine_state){
         render_ref_vector[e->sprite.render_layer][render_ref_vector_count[e->sprite.render_layer]++] = ref;
     }
 
-    for (int l = 0; l < RENDER_LAYER_COUNT; ++l) {
+    for (int l = 0; l < MAP_LAYER_COUNT; ++l) {
         int entity_layer_count = render_ref_vector_count[l];
         for (int i = 0; i < entity_layer_count; ++i) {
             EntityRef ref = render_ref_vector[l][i];
@@ -58,17 +58,16 @@ void system_render_entities(EngineState *engine_state){
 
             // render texture
             SDL_RenderTextureRotated(engine_state->renderer,tx,&src,&dest,0,&(SDL_FPoint){0,0},SDL_FLIP_NONE);
-
         }
     }
-
-
 }
 
 void system_render_entities_debug(EngineState *engine_state){
 
     // clear render_ref_vector_count
     // memset(&render_ref_vector_count,0,sizeof(render_ref_vector_count));
+
+    // render collider
 
     EntityManager *entity_manager = &engine_state->entity_manager;
     Camera2D *camera = &engine_state->camera;
@@ -84,19 +83,37 @@ void system_render_entities_debug(EngineState *engine_state){
                 camera_world_to_screen_r(
                     // camera_screen_to_world_r(
                     &engine_state->camera,
-                    e->pos.x,
-                    e->pos.y
+                    e->pos.x + e->collider.offset.x,
+                    e->pos.y + e->collider.offset.y
                     );
 
-        float size_w = camera_world_to_screen_size(&engine_state->camera,1);
-        float size_h = camera_world_to_screen_size(&engine_state->camera,1);
+        float size_w = camera_world_to_screen_size(&engine_state->camera,e->collider.width);
+        float size_h = camera_world_to_screen_size(&engine_state->camera,e->collider.height);
+
         SDL_FRect render_debug_rect = {screen_point.x, screen_point.y, size_w,size_h};
+
+        // SDL_FRect render_debug_rect = {
+        //     screen_point.x,
+        //     screen_point.y,
+        //     e->collider.width,
+        //     e->collider.height,
+        // };
 
         // only if it's solid
         // if(e.)
-        if(!e->collider.is_trigger){ // meant to be solid
+
+        switch (e->map_layer) {
+        case MAP_LAYER_SOLID:{
             SDL_SetRenderDrawColor(engine_state->renderer, 255,100,100,50);
             SDL_RenderFillRect(engine_state->renderer,&render_debug_rect);
+        }
+            break;
+        case MAP_LAYER_ACTORS:{
+            SDL_SetRenderDrawColor(engine_state->renderer, 100,255,100,50);
+            SDL_RenderFillRect(engine_state->renderer,&render_debug_rect);
+            }
+        default:
+            break;
         }
 
 

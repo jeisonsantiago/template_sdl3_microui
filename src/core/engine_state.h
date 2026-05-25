@@ -63,12 +63,15 @@ typedef struct {
     Map world_map;
     char save_map_filename[200];
 
+    // solid array related
+    EntityRef solid_entities[MAX_ENTITIES];
+    size_t solid_entities_count;
+
+    float solid_update_cooldown;
+    float solid_update_count;
+
     // editor vars --------------------------------------
     Editor editor;
-    // bool edit_menu;
-    // int map_layers[3];
-    // int selected_layer;
-    // int selected_tile;
 
     // nuklear
     struct nk_context *nk_ctx;

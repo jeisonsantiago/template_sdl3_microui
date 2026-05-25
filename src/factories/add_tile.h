@@ -3,8 +3,6 @@
 
 #include "entity_manager.h"
 
-EntityRef add_tile(EntityManager *entity_manager, float x, float y);
-
-
+EntityRef add_tile(EntityManager *entity_manager, float x, float y, MapLayer map_layer);
 
 #endif // ADD_TILE_H

@@ -3,13 +3,11 @@
 
 // #include "engine_state.h"
 #include "entity.h"
+#include "core_definitions.h"
 
-typedef enum{
-    MAP_LAYER_GROUND = 0,
-    MAP_LAYER_SOLID,
-    MAP_LAYER_DECORATION,
-    MAP_LAYER_COUNT
-}MapLayer;
+#include "core_helpers.h"
+
+static LameString map_layer_names[MAP_LAYER_COUNT] = {0};
 
 #define MAX_MAP_ROWS 100
 #define MAX_MAP_COLS 100

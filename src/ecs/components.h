@@ -1,14 +1,21 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+#include "core_definitions.h"
+
+// typedef enum{
+//     RENDER_LAYER_GROUND,
+//     RENDER_LAYER_SOLID,
+//     RENDER_LAYER_DECORATION,
+//     RENDER_LAYER_PLAYER,
+//     RENDER_LAYER_ENEMY,
+//     RENDER_LAYER_COUNT
+// }RenderLayer;
+
 typedef enum{
-    RENDER_LAYER_GROUND,
-    RENDER_LAYER_SOLID,
-    RENDER_LAYER_DECORATION,
-    RENDER_LAYER_PLAYER,
-    RENDER_LAYER_ENEMY,
-    RENDER_LAYER_COUNT
-}RenderLayer;
+    COLLIDER_TYPE_TRIGGER = 0,
+    COLLIDER_TYPE_SOLID = 0,
+}ColliderType;
 
 typedef struct {
     SDL_FPoint position;
@@ -37,54 +44,54 @@ typedef struct {
     int asset_texture_index;
     int texture_index;
     float angle;
-    RenderLayer render_layer;
+    MapLayer render_layer;
     // Vector2 render_origin = {0};
     // RenderLayer layer = RenderLayer::DEFAULT;
 }SpriteComponent;
 
-// struct PhysicsComponent{
-//     Vector2 velocity = {};
-//     Vector2 acceleration = {};
-//     float max_speed = 0;
-//     float move_force = 0;
-// };
+typedef struct{
+    SDL_FPoint velocity;
+    SDL_FPoint acceleration;
+    float speed;
+    float friction;
+}PhysicsComponent;
 
-// struct HealthComponent{
-//     bool active = false;
-//     float max_health;
-//     float current_health;
-// };
+typedef struct {
+    bool active;
+    float max_health;
+    float current_health;
+}HealthComponent;
 
-// struct AttackComponent{
-//     float damage = 1;
-//     float cooldown = 1.0f; // 1 attack per second
-//     float cooldown_counter = 0.0f;
-// };
+typedef struct {
+    float damage;
+    float cooldown; // 1 attack per second
+    float cooldown_counter;
+}AttackComponent;
 
 // struct AnimationComponent{
-//     bool active = false;
-//     int startFrame = {};
-//     int lastFrame = {};
-//     int currentFrame = {};
-//     int frameOffset = {};
-//     int frameCount = 2; // for now
+//     bool active;
+//     int start_frame;
+//     int last_frame;
+//     int current_frame;
+//     int frame_offset;
+//     int frame_count; // for now
 
 //     // counter for any animation
-//     float animationCounter = 0;
+//     float animation_counter;
 
 //     // specific animation type (loop)
-//     float idleDuration = 0;// duration per frame
-//     float runDuration = 0;
+//     float idleDuration;// duration per frame
+//     float runDuration;
 
 //     // sets for default animation
-//     bool defaultAnimation = false;
-//     float defaultDuration = 0;
+//     bool defaultAnimation;
+//     float defaultDuration;
 
 //     // deactivate entity when animation is finished
-//     bool deactivateOnFinish = false;
+//     bool deactivateOnFinish;
 
 //     // queue free when animation is finished
-//     bool deleteOnFinish = false;
+//     bool deleteOnFinish;
 // };
 
 #endif // COMPONENTS_H

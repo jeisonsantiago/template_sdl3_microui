@@ -75,6 +75,8 @@ add_executable(TEMPLATE_C_SDL3
     src/serialization/serialization_map.h src/serialization/serialization_map.c
     src/systems/system_queue_free.h src/systems/system_queue_free.c
     src/gui_nuklear/nuklear_helpers.h src/gui_nuklear/nuklear_helpers.c
+    src/core/core_definitions.h
+    src/systems/system_movement_collision.h src/systems/system_movement_collision.c
 
 )
 
