@@ -109,7 +109,11 @@ void system_render_entities_debug(EngineState *engine_state){
         }
             break;
         case MAP_LAYER_ACTORS:{
+            SDL_SetRenderDrawColor(engine_state->renderer, 255,0,0,255);
+            SDL_RenderPoint(engine_state->renderer,render_debug_rect.x, render_debug_rect.y);
+
             SDL_SetRenderDrawColor(engine_state->renderer, 100,255,100,50);
+
             SDL_RenderFillRect(engine_state->renderer,&render_debug_rect);
             }
         default:

@@ -15,7 +15,7 @@
 typedef enum{
     COLLIDER_TYPE_TRIGGER = 0,
     COLLIDER_TYPE_SOLID = 0,
-}ColliderType;
+}PhysicsBody;
 
 typedef struct {
     SDL_FPoint position;

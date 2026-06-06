@@ -1,6 +1,29 @@
 #include "system_movement_collision.h"
 
 
+void update_actor_physics(Entity *e, float dt, Axis axis){
+    // // update velocity
+
+    switch (axis) {
+    case AXIS_X:
+    {
+        e->physics.velocity.x += e->physics.acceleration.x * dt;
+        float damp_factor = SDL_max(0,1-e->physics.friction * dt);
+        e->physics.velocity.x *= damp_factor;
+        e->pos.x += e->physics.velocity.x * dt;
+    }
+        break;
+    case AXIS_Y:
+    {
+        e->physics.velocity.y += e->physics.acceleration.y * dt;
+        float damp_factor = SDL_max(0,1-e->physics.friction * dt);
+        e->physics.velocity.y *= damp_factor;
+        e->pos.y += e->physics.velocity.y * dt;
+    }
+        break;
+    }
+}
+
 void system_update_solids(EngineState *engine_state){
     EntityManager *entity_manager = &engine_state->entity_manager;
 
@@ -21,7 +44,7 @@ void system_update_solids(EngineState *engine_state){
     // SDL_Log("number of solids:%i",engine_state->solid_entities_count);
 }
 
-void system_movement_collision_w_solids(EngineState *engine_state)
+void system_movement_collision_w_solids(EngineState *engine_state, float dt)
 {
     EntityManager *entity_manager = &engine_state->entity_manager;
     Camera2D *camera = &engine_state->camera;
@@ -35,11 +58,13 @@ void system_movement_collision_w_solids(EngineState *engine_state)
         if(e->map_layer != MAP_LAYER_ACTORS) continue;
 
         SDL_FRect e_rect_actor = {
-            e->pos.x + e->collider.offset.x,
-            e->pos.y + e->collider.offset.y,
+            e->pos.x,
+            e->pos.y,
             e->collider.width,
             e->collider.height
         };
+
+        update_actor_physics(e,dt,AXIS_X);
 
         for (int s = 0; s < engine_state->solid_entities_count; ++s) {
             EntityRef ref_solid = engine_state->solid_entities[s];
@@ -47,18 +72,25 @@ void system_movement_collision_w_solids(EngineState *engine_state)
 
             // get rectangles
             SDL_FRect e_rect_solid = {
-                e_solid->pos.x + e->collider.offset.x,
-                e_solid->pos.y + e->collider.offset.y,
+                e_solid->pos.x,
+                e_solid->pos.y,
                 e_solid->collider.width,
                 e_solid->collider.height
             };
 
-            // check if there's a collision with actor and solid
-
+            // solve intersection X
+            if(SDL_HasRectIntersectionFloat(&e_rect_actor, &e_rect_solid)){
+                if(e->physics.velocity.x > 0){
+                    e->pos.x = (e_rect_solid.x - e_rect_actor.w ) - 0.1f;
+                }else{
+                    e->pos.x = (e_rect_solid.x + e_rect_actor.w) + 0.1f;
+                }
+            }
         }
     }
-
 }
+
+
 
 void system_movement(EngineState *engine_state, float dt)
 {
@@ -72,23 +104,19 @@ void system_movement(EngineState *engine_state, float dt)
 
         if(e->map_layer != MAP_LAYER_ACTORS) continue;
 
-        // e->physics.acceleration.x += (e->physics.velocity.x * - e->physics.friction) * dt;
-        // e->physics.acceleration.y += (e->physics.velocity.y * - e->physics.friction) * dt;
-        e->physics.velocity.x += e->physics.acceleration.x * dt;
-        e->physics.velocity.y += e->physics.acceleration.y * dt;
+        // // update velocity
+        // e->physics.velocity.x += e->physics.acceleration.x * dt;
+        // e->physics.velocity.y += e->physics.acceleration.y * dt;
 
-        // SDL_Log("acceleration: %f %f",e->physics.velocity.x,e->physics.velocity.y);
-
-        // apply friction
-
-        float damp_factor = SDL_max(0,1-e->physics.friction * dt);
-        e->physics.velocity.x *= damp_factor;
-        e->physics.velocity.y *= damp_factor;
+        // // apply friction
+        // float damp_factor = SDL_max(0,1-e->physics.friction * dt);
+        // e->physics.velocity.x *= damp_factor;
+        // e->physics.velocity.y *= damp_factor;
 
 
-        // update position
-        e->pos.x += e->physics.velocity.x * dt;
-        e->pos.y += e->physics.velocity.y * dt;
+        // // update position
+        // e->pos.x += e->physics.velocity.x * dt;
+        // e->pos.y += e->physics.velocity.y * dt;
         // }
     }
 }

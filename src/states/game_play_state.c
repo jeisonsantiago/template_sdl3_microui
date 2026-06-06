@@ -24,7 +24,7 @@ void game_play_state_on_enter(void *data)
 
     // init world map
     // map_init(&engine_state->world_map,5,5);
-    engine_state->player_ref = add_player(entity_manger,1,1, MAP_LAYER_ACTORS);
+    engine_state->player_ref = add_player(entity_manger,1.5f,1.5f, MAP_LAYER_ACTORS);
 
     // load map
     serialization_load_map(engine_state,"map_01.bin");
@@ -60,7 +60,6 @@ void game_play_state_update(float dt, void *data)
         engine_state->solid_update_count = 0.0f;
     }
 
-
     camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,0.12f);
 
     // engine_state->camera.x = player->pos.x;
@@ -95,7 +94,9 @@ void game_play_state_update(float dt, void *data)
     // SDL_Log("acceleration: %f %f",player->physics.acceleration.x,player->physics.acceleration.y);
 
     // update physics
-    system_movement(engine_state,dt);
+    // system_movement(engine_state,dt);
+
+    system_movement_collision_w_solids(engine_state,dt);
 
     // systems
     system_queue_free(engine_state);

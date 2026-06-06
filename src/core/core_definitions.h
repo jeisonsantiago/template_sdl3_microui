@@ -22,4 +22,9 @@ typedef enum{
     MAP_LAYER_COUNT
 }MapLayer;
 
+
+typedef enum{
+    AXIS_X,
+    AXIS_Y,
+}Axis;
 #endif // CORE_DEFINITIONS_H
