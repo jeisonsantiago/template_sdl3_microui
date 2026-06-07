@@ -63,7 +63,7 @@ void engine_state_initialize_graphics(EngineState *self){
 
 
     //editor
-    self->editor.is_editor = true;
+    self->editor.is_editor = false;
     // memset(self->map_layers,0,sizeof(self->map_layers));
     self->editor.selected_tile = 0;
     self->editor.selected_layer = 0;

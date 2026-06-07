@@ -77,6 +77,9 @@ add_executable(TEMPLATE_C_SDL3
     src/gui_nuklear/nuklear_helpers.h src/gui_nuklear/nuklear_helpers.c
     src/core/core_definitions.h
     src/systems/system_movement_collision.h src/systems/system_movement_collision.c
+    src/core/helper.h src/core/helper.c
+    src/factories/add_room.h src/factories/add_room.c
+    src/systems/system_player_input.h src/systems/system_player_input.c
 
 )
 

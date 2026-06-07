@@ -1,8 +1,9 @@
 #include "system_movement_collision.h"
 
+#include "helper.h"
+
 
 void update_actor_physics(Entity *e, float dt, Axis axis){
-    // // update velocity
 
     switch (axis) {
     case AXIS_X:
@@ -57,33 +58,80 @@ void system_movement_collision_w_solids(EngineState *engine_state, float dt)
 
         if(e->map_layer != MAP_LAYER_ACTORS) continue;
 
-        SDL_FRect e_rect_actor = {
-            e->pos.x,
-            e->pos.y,
-            e->collider.width,
-            e->collider.height
-        };
+        // iteraetions
+        const int ITERATIONS = 8;
+        float step = dt / (float)ITERATIONS;
+        for (int it = 0; it < ITERATIONS; ++it){
 
-        update_actor_physics(e,dt,AXIS_X);
+            // CHECK X AXIS
+            update_actor_physics(e,step,AXIS_X);
 
-        for (int s = 0; s < engine_state->solid_entities_count; ++s) {
-            EntityRef ref_solid = engine_state->solid_entities[s];
-            Entity *e_solid = entity_manager_get(entity_manager,ref_solid);
-
-            // get rectangles
-            SDL_FRect e_rect_solid = {
-                e_solid->pos.x,
-                e_solid->pos.y,
-                e_solid->collider.width,
-                e_solid->collider.height
+            SDL_FRect e_rect_actor = {
+                e->pos.x + e->collider.offset.x,
+                e->pos.y + e->collider.offset.y,
+                e->collider.width,
+                e->collider.height
             };
 
-            // solve intersection X
-            if(SDL_HasRectIntersectionFloat(&e_rect_actor, &e_rect_solid)){
-                if(e->physics.velocity.x > 0){
-                    e->pos.x = (e_rect_solid.x - e_rect_actor.w ) - 0.1f;
-                }else{
-                    e->pos.x = (e_rect_solid.x + e_rect_actor.w) + 0.1f;
+            for (int s = 0; s < engine_state->solid_entities_count; ++s) {
+                EntityRef ref_solid = engine_state->solid_entities[s];
+                Entity *e_solid = entity_manager_get(entity_manager,ref_solid);
+
+                SDL_FRect e_rect_solid = {
+                    e_solid->pos.x,
+                    e_solid->pos.y,
+                    e_solid->collider.width,
+                    e_solid->collider.height
+                };
+
+                if(helper_intersects_aabb(&e_rect_actor,&e_rect_solid)){
+                    // if they intersect get the overlap
+                    SDL_FRect overlap = helper_get_overlap(&e_rect_actor,&e_rect_solid);
+
+                    if(overlap.w < overlap.h){
+                        //x axis
+                        if(e->pos.x < e_rect_solid.x){
+                            e->pos.x -= overlap.w;
+                        }else{
+                            e->pos.x += overlap.w;
+                        }
+                    }
+                }
+            }
+
+            // CHECK Y AXIS
+            update_actor_physics(e,step,AXIS_Y);
+
+            e_rect_actor = (SDL_FRect){
+                            e->pos.x + e->collider.offset.x,
+                            e->pos.y + e->collider.offset.y,
+                            e->collider.width,
+                            e->collider.height
+                        };
+
+            for (int s = 0; s < engine_state->solid_entities_count; ++s) {
+                EntityRef ref_solid = engine_state->solid_entities[s];
+                Entity *e_solid = entity_manager_get(entity_manager,ref_solid);
+
+                SDL_FRect e_rect_solid = {
+                    e_solid->pos.x,
+                    e_solid->pos.y,
+                    e_solid->collider.width,
+                    e_solid->collider.height
+                };
+
+                if(helper_intersects_aabb(&e_rect_actor,&e_rect_solid)){
+                    // if they intersect get the overlap
+                    SDL_FRect overlap = helper_get_overlap(&e_rect_actor,&e_rect_solid);
+
+                    if(overlap.w > overlap.h){
+                        //y axis
+                        if(e->pos.y < e_rect_solid.y){
+                            e->pos.y -= overlap.h;
+                        }else{
+                            e->pos.y += overlap.h;
+                        }
+                    }
                 }
             }
         }
