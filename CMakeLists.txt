@@ -80,6 +80,10 @@ add_executable(TEMPLATE_C_SDL3
     src/core/helper.h src/core/helper.c
     src/factories/add_room.h src/factories/add_room.c
     src/systems/system_player_input.h src/systems/system_player_input.c
+    src/systems/system_animation.h src/systems/system_animation.c
+    src/ecs/fsm.h src/ecs/fsm.c
+    src/systems/system_script.h src/systems/system_script.c
+
 
 )
 

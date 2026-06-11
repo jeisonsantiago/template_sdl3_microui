@@ -5,6 +5,7 @@
 #include "camera.h"
 
 #include "add_player.h"
+#include "add_room.h"
 #include "editor.h"
 
 #include "process_input.h"
@@ -13,6 +14,7 @@
 #include "system_render_entities.h"
 #include "system_queue_free.h"
 #include "system_movement_collision.h"
+#include "system_script.h"
 
 #include "serialization_map.h"
 
@@ -28,7 +30,8 @@ void game_play_state_on_enter(void *data)
     engine_state->player_ref = add_player(entity_manger,1.5f,1.5f, MAP_LAYER_ACTORS);
 
     // load map
-    serialization_load_map(engine_state,"map_01.bin");
+    // serialization_load_map(engine_state,"map_01.bin");
+    add_room(engine_state);
 
     camera_teleport(&engine_state->camera,1,1);
 
@@ -61,11 +64,13 @@ void game_play_state_update(float dt, void *data)
         engine_state->solid_update_count = 0.0f;
     }
 
-    camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,0.12f);
+    camera_update_smooth_follow(&engine_state->camera,player->pos.x, player->pos.y,2.2f,dt);
 
     // systems
     system_player_input(engine_state);
     system_movement_collision_w_solids(engine_state,dt);
+    system_script(engine_state);
+
     system_queue_free(engine_state);
 }
 
@@ -77,7 +82,7 @@ void game_play_state_render(void *data)
     // system_render_entities_test(engine_state);
 
     // debug render
-    system_render_entities_debug(engine_state);
+    // system_render_entities_debug(engine_state);
 
     // editor render
     editor_render(engine_state);

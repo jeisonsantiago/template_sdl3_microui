@@ -68,30 +68,11 @@ typedef struct {
     float cooldown_counter;
 }AttackComponent;
 
-// struct AnimationComponent{
-//     bool active;
-//     int start_frame;
-//     int last_frame;
-//     int current_frame;
-//     int frame_offset;
-//     int frame_count; // for now
+typedef struct{
+    bool active;
 
-//     // counter for any animation
-//     float animation_counter;
-
-//     // specific animation type (loop)
-//     float idleDuration;// duration per frame
-//     float runDuration;
-
-//     // sets for default animation
-//     bool defaultAnimation;
-//     float defaultDuration;
-
-//     // deactivate entity when animation is finished
-//     bool deactivateOnFinish;
-
-//     // queue free when animation is finished
-//     bool deleteOnFinish;
-// };
+    int base_frame_index;
+    int frame_counter;
+}AnimationComponent;
 
 #endif // COMPONENTS_H

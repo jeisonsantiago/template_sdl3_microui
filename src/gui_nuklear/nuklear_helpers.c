@@ -155,9 +155,25 @@ void nuklear_gui(EngineState *engine_state){
         // if(nk_button_)
         for (int i = 0; i < tasset->tile_count; ++i) {
             struct nk_image img = ui_image_from_texture_ex(&engine_state->asset_manager.texture_assets[0],i);
+
+
+            char label[4];
+            sprintf(label,"%i",i);
+            nk_label(ctx,label,0);
             if(nk_button_image(ctx,img)){
+            // if(nk_button_image_label(ctx,img,"TEST",NK_TEXT_LEFT)){
                 engine_state->editor.selected_tile = i;
             }
+
+
+            // nk_layout_row_static(ctx,40,45,2);
+            // char label[10] = "11";
+            // nk_label(ctx,label,0);
+            // if(nk_button_image(ctx,img)){
+            // // if(nk_button_image_label(ctx,img,"TEST",NK_TEXT_LEFT)){
+
+            //     engine_state->editor.selected_tile = i;
+            // }
         }
         nk_tree_pop(ctx);
     }

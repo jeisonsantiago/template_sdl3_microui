@@ -100,7 +100,8 @@ void camera_screen_to_world(
         float screen_w,
         float screen_h,
         float *out_world_x,
-        float *out_world_y){
+        float *out_world_y)
+{
 
     // reverse the screen center offset
     float relative_x = screen_x - (screen_w * 0.5f);
@@ -115,22 +116,18 @@ void camera_screen_to_world(
     *out_world_y = relative_y - self->y;
 }
 
-void camera_update_smooth_follow(Camera2D *self, float target_x, float target_y,  float smoothness)
+void camera_update_smooth_follow(Camera2D *self, float target_x, float target_y,  float smoothness, float dt)
 {
 
     // float camera_x = -(engine_state->window_width * 0.5f);
     // float camera_y = -(engine_state->window_height * 0.5f);
 
-
     // recommendation is 0.1 for even fell
     // camera->x += ((target_x * es->window_width) - camera->x) * smoothness;
     // camera->y += ((target_y * es->window_height) - camera->y) * smoothness;
 
-    self->x += (target_x - self->x) * smoothness;
-    self->y += (target_y - self->y) * smoothness;
-
-    // self->x = 2.5;
-    // self->y = 2.5;
+    self->x += (target_x - self->x) * smoothness * dt;
+    self->y += (target_y - self->y) * smoothness * dt;
 }
 float camera_world_to_screen_size(Camera2D *camera, float size){
     return size * camera->zoom;

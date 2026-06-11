@@ -59,7 +59,7 @@ void system_movement_collision_w_solids(EngineState *engine_state, float dt)
         if(e->map_layer != MAP_LAYER_ACTORS) continue;
 
         // iteraetions
-        const int ITERATIONS = 8;
+        const int ITERATIONS = 10;
         float step = dt / (float)ITERATIONS;
         for (int it = 0; it < ITERATIONS; ++it){
 
@@ -152,19 +152,6 @@ void system_movement(EngineState *engine_state, float dt)
 
         if(e->map_layer != MAP_LAYER_ACTORS) continue;
 
-        // // update velocity
-        // e->physics.velocity.x += e->physics.acceleration.x * dt;
-        // e->physics.velocity.y += e->physics.acceleration.y * dt;
 
-        // // apply friction
-        // float damp_factor = SDL_max(0,1-e->physics.friction * dt);
-        // e->physics.velocity.x *= damp_factor;
-        // e->physics.velocity.y *= damp_factor;
-
-
-        // // update position
-        // e->pos.x += e->physics.velocity.x * dt;
-        // e->pos.y += e->physics.velocity.y * dt;
-        // }
     }
 }

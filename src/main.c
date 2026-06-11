@@ -16,7 +16,7 @@
 #define NS_PER_SECOND 1000000000.0
 
 // define target fps
-#define TARGET_FPS 144.0
+#define TARGET_FPS 60.0
 #define TARGET_FPS_TIME_NS (NS_PER_SECOND / TARGET_FPS)
 
 // nuklear

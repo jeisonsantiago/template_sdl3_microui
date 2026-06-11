@@ -3,6 +3,7 @@
 
 #include "components.h"
 #include "core_definitions.h"
+#include "fsm.h"
 
 static const uint32_t INVALID_IDX = -1;
 
@@ -31,21 +32,23 @@ typedef struct {
     SpriteComponent sprite;
     HealthComponent health;
     AttackComponent attack;
+    AnimationComponent animation;
 
     EntityRef parent_ref;
     EntityRef first_child_ref;
     EntityRef next_sibling_ref;
     EntityRef previous_sibling_ref;
 
+    // state machine
+    fsm_t state_machine;
+
     // collision related
-    // std::function<void(int,int, EntityArray&)> on_collision_enter = nullptr;
     void (*on_collion_enter)(uint32_t,uint32_t,void *entity_manager);
-    // std::function<void(int,int, EntityArray&)> on_collision_stay = nullptr;
     void (*on_collion_stay)(uint32_t,uint32_t,void *entity_manager);
-    // std::function<void(int,int, EntityArray&)> on_collision_exit = nullptr;
     void (*on_collion_exit)(uint32_t,uint32_t,void *entity_manager);
 
-    // bool has_child(int idx);
+    // update specfifics
+    void (*update_script)(EntityRef,float, void *entity_manager);
 }Entity;
 
 bool entity_valid(Entity *self);

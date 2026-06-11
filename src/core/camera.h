@@ -30,7 +30,7 @@ void camera_screen_to_world(
         float *out_world_x,
         float *out_world_y);
 
-void camera_update_smooth_follow(Camera2D *self,float target_x, float target_y, float smoothness);
+void camera_update_smooth_follow(Camera2D *self, float target_x, float target_y,  float smoothness, float dt);
 
 
 float camera_world_to_screen_size(Camera2D *camera, float size);
