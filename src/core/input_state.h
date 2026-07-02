@@ -3,17 +3,18 @@
 
 
 typedef enum{
-    ACTION_MOVE_UP = 0,
+    ACTION_UNDEFINED = 0,
+    ACTION_MOVE_UP,
     ACTION_MOVE_DOWN,
     ACTION_MOVE_LEFT,
     ACTION_MOVE_RIGHT,
-    ACTION_FIRE_WEAPON,
+    ACTION_ATTACK,
     ACTION_USE,
     ACTION_COUNT
 }GameAction;
 
 typedef struct{
-    bool active_actions[ACTION_COUNT];
+    bool time_out_actions[ACTION_COUNT];
 }InputState;
 
 typedef struct{

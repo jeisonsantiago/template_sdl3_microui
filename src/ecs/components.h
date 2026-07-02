@@ -2,6 +2,7 @@
 #define COMPONENTS_H
 
 #include "core_definitions.h"
+#include "entity_states.h"
 
 // typedef enum{
 //     RENDER_LAYER_GROUND,
@@ -22,7 +23,7 @@ typedef struct {
 }TransformComponent;
 
 typedef struct {
-    bool active;
+    bool time_out;
     float width;
     float height;
     bool is_trigger;
@@ -57,7 +58,7 @@ typedef struct{
 }PhysicsComponent;
 
 typedef struct {
-    bool active;
+    bool time_out;
     float max_health;
     float current_health;
 }HealthComponent;
@@ -69,10 +70,15 @@ typedef struct {
 }AttackComponent;
 
 typedef struct{
-    bool active;
+    EntityAnimation animation;
+    int frames_per_second;
+    int current_frame;
+}Animation;
 
+typedef struct{
     int base_frame_index;
-    int frame_counter;
-}AnimationComponent;
+    EntityAnimation current_animation;
+    Animation animations[ANIMATION_COUNT];
+}AnimatorComponent;
 
 #endif // COMPONENTS_H

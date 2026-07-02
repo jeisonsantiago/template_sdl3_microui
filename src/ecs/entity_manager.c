@@ -82,9 +82,79 @@ void entity_manager_clear(EntityManager *self)
 
 Entity *entity_manager_get_by_index(EntityManager *self, uint32_t idx)
 {
-    if(idx >= 0 && idx < MAX_ENTITIES){
+    if(idx >= 0 && idx < self->highest_idx){
+
+
+
         return &self->entities[idx];
     }
 
     return NULL;
+}
+
+void entity_manager_set_timer(
+        EntityManager *self,
+        EntityRef ref,
+        EntityState state,
+        float duration
+        ){
+
+    uint32_t index = deref(self,ref);
+    if(index == INVALID_IDX) return;
+
+    EntityTimer *e_timers = &self->timers[index][state];
+
+    e_timers->duration = duration;
+    e_timers->elapsed = 0.0f;
+    e_timers->ready = true;
+}
+
+// void entity_manager_start_timer(
+//         EntityManager *self,
+//         EntityRef ref,
+//         EntityState state
+//         ){
+
+//     uint32_t index = deref(self,ref);
+//     if(index == INVALID_IDX) return;
+
+//     EntityTimer *e_timers = &self->timers[index][state];
+//     e_timers[state].time_out = false;
+//     e_timers[state].counter = 0.0f;
+// }
+
+// bool entity_manager_timer_out(
+//         EntityManager *self,
+//         EntityRef ref,
+//         EntityState state
+//         ){
+
+//     uint32_t index = deref(self,ref);
+//     if(index == INVALID_IDX) return false;
+
+//     EntityTimer *e_timers = &self->timers[index][state];
+
+//     return e_timers->time_out;
+// }
+void entity_manager_init_timer(EntityManager *self, EntityRef ref, EntityState state)
+{
+    uint32_t index = deref(self,ref);
+    if(index == INVALID_IDX) return;
+
+    EntityTimer *e_timers = &self->timers[index][state];
+    e_timers->ready = false;
+    e_timers->elapsed = 0.0f;
+}
+
+bool entity_manager_time_out(
+        EntityManager *self,
+        EntityRef ref,
+        EntityState state
+        ){
+
+    uint32_t index = deref(self,ref);
+    if(index == INVALID_IDX) return true;
+
+    EntityTimer *e_timers = &self->timers[index][state];
+    return e_timers->ready;
 }

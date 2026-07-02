@@ -1,0 +1,22 @@
+#ifndef ENTITY_STATES_H
+#define ENTITY_STATES_H
+
+typedef enum{
+    STATE_UNDEFINED = 0,
+    STATE_IDLE,
+    STATE_WALK,
+    STATE_ATTACK,
+    STATE_STUNED,
+    STATE_COUNT
+}EntityState;
+
+typedef enum{
+    ANIMATION_UNDEFINED = 0,
+    ANIMATION_IDLE,
+    ANIMATION_WALK,
+    ANIMATION_ATTACK,
+    ANIMATION_STUNED,
+    ANIMATION_COUNT
+}EntityAnimation;
+
+#endif // ENTITY_STATES_H

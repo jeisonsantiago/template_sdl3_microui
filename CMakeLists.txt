@@ -28,12 +28,14 @@ include_directories(
     src/ecs
     src/state
     src/factories
+    src/factories/player
     src/widgets
     src/systems
     src/world
     src/serialization
     vendor/microui
     vendor/nuklear
+
 )
 
 add_executable(TEMPLATE_C_SDL3
@@ -58,7 +60,8 @@ add_executable(TEMPLATE_C_SDL3
     src/states/game_state.c
     src/states/game_play_state.h
     src/states/game_play_state.c
-    src/factories/add_player.h src/factories/add_player.c
+    src/factories/player/add_player.h
+    src/factories/player/add_player.c
     src/core/input_state.h
     src/factories/add_tile.h src/factories/add_tile.c
 
@@ -83,6 +86,8 @@ add_executable(TEMPLATE_C_SDL3
     src/systems/system_animation.h src/systems/system_animation.c
     src/ecs/fsm.h src/ecs/fsm.c
     src/systems/system_script.h src/systems/system_script.c
+    src/factories/entity_states.h
+    src/systems/system_cooldown.h src/systems/system_cooldown.c
 
 
 )

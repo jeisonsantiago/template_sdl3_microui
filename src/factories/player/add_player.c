@@ -2,42 +2,64 @@
 
 #include "fsm.h"
 #include "helper.h"
+#include "engine_state.h"
 
-static void action_move(void *ctx, fsm_event_t event, const void *data)
-{
-    SDL_Log("MOVE");
+
+void try_attack(EntityRef entity_ref, EntityManager *entity_manager, EngineState *engine_state){
+
+    if(engine_state->input_state.time_out_actions[ACTION_ATTACK] &&
+        !engine_state->previous_input_state.time_out_actions[ACTION_ATTACK]){
+
+        Entity *e = entity_manager_get(entity_manager,entity_ref);
+
+        // if not reached a time out cancel attack
+        if(!entity_manager_time_out(entity_manager,entity_ref,STATE_ATTACK)){
+            // e->state = STATE_IDLE;
+            return;
+        }else{
+            entity_manager_init_timer(entity_manager, entity_ref,STATE_ATTACK);
+            e->state = STATE_ATTACK;
+        }
+    }
 }
 
-static void action_idle(void *ctx, fsm_event_t event, const void *data)
-{
-    SDL_Log("IDLE");
-}
+void script_update(EntityRef entity_ref, float dt, void *engine){
 
-static const fsm_transition_t table[] =
-{
-    /* MONITORING -> ALERT when threshold is exceeded */
-    // { ST_IDLE, EV_IDLE, ST_IDLE, action_idle },
-    { ST_IDLE, EV_MOVE, ST_MOVE, action_move },
-    { ST_MOVE, EV_IDLE, ST_IDLE, action_idle },
-
-};
-
-void script_update(EntityRef entity_ref, float dt, void *entity_manager){
-
-    EntityManager *e_manager = (EntityManager*)entity_manager;
-    Entity *e = entity_manager_get(e_manager,entity_ref);
+    EngineState *engine_state = (EngineState*)engine;
+    EntityManager *entity_manager = &engine_state->entity_manager;
+    Entity *e = entity_manager_get(entity_manager,entity_ref);
 
     if(!e) return;
 
-    // if (helper_vector_lenght(e->physics.velocity) > 0){
-    //     fsm_dispatch(&e->state_machine,EV_MOVE,NULL);
-    // }else
-    if ((int)helper_vector_lenght(e->physics.velocity) == 0){
-        fsm_dispatch(&e->state_machine,EV_IDLE,NULL);
+    switch (e->state) {
+    case STATE_IDLE:{
+        if (helper_vector_lenght(e->physics.acceleration) > 0){
+            e->state = STATE_WALK;
+        }
+
+        //try to attack
+        try_attack(entity_ref,entity_manager,engine_state);
+        break;
+    }
+    case STATE_WALK:{
+        if ((int)helper_vector_lenght(e->physics.acceleration) == 0){
+            e->state = STATE_IDLE;
+        }
+
+        //try to attack
+        try_attack(entity_ref,entity_manager,engine_state);
+        break;
+    }
+    case STATE_ATTACK:{
+
+        // after attack move to idle
+        e->state = STATE_IDLE;
+        break;
     }
 
+    }
 
-
+    // SDL_Log("STATE:%u",e->state);
 }
 
 EntityRef add_player(EntityManager *entity_manager, float x, float y, MapLayer map_layer)
@@ -72,16 +94,20 @@ EntityRef add_player(EntityManager *entity_manager, float x, float y, MapLayer m
     e->physics.velocity.y = 0;
 
     e->animation.base_frame_index = 0;
-    e->animation.active = true;
 
     // set state machine
     // e->state_machine.table = table;
     // e->state_machine.table_len = 2;
 
-    fsm_init(&e->state_machine,e,ST_IDLE,table,2,NULL,NULL);
+    e->state = STATE_IDLE;
+    // fsm_init(&e->state_machine,e,ST_IDLE,table,6,NULL,NULL);
 
     // script update
     e->update_script = script_update;
+
+    // register cooldown
+    // entity_register_cooldown_state(e,STATE_ATTACK,1.0f, false);
+    entity_manager_set_timer(entity_manager,ref,STATE_ATTACK,2.0f);
 
     return ref;
 }

@@ -38,7 +38,7 @@ typedef struct {
     // game state
     GameState gameplay;
     GameState menu;
-    GameState active_state;
+    GameState time_out_state;
 
     // assets and entities
     AssetManager asset_manager;
@@ -51,6 +51,7 @@ typedef struct {
     Camera2D camera;
 
     // inputs ---------------------------------------
+    InputState previous_input_state;
     InputState input_state;
     InputMapper input_mapper;
 

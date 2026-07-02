@@ -12,7 +12,7 @@ void system_script(EngineState *engine_state)
         EntityRef ref = entity_manager_get_ref(entity_manager,i);
 
         if(e->update_script){
-            e->update_script(ref,0,entity_manager);
+            e->update_script(ref,0,engine_state);
         }
 
     }

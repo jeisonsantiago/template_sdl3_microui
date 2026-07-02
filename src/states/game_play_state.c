@@ -15,6 +15,7 @@
 #include "system_queue_free.h"
 #include "system_movement_collision.h"
 #include "system_script.h"
+#include "system_cooldown.h"
 
 #include "serialization_map.h"
 
@@ -70,6 +71,7 @@ void game_play_state_update(float dt, void *data)
     system_player_input(engine_state);
     system_movement_collision_w_solids(engine_state,dt);
     system_script(engine_state);
+    system_cooldown(engine_state,dt);
 
     system_queue_free(engine_state);
 }

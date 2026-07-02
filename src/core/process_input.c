@@ -83,7 +83,7 @@ void input_init_defaults(InputMapper *input_mapper){
     input_mapper->key_bindins[ACTION_MOVE_DOWN]     = SDL_SCANCODE_S;
     input_mapper->key_bindins[ACTION_MOVE_LEFT]     = SDL_SCANCODE_A;
     input_mapper->key_bindins[ACTION_MOVE_RIGHT]    = SDL_SCANCODE_D;
-    input_mapper->key_bindins[ACTION_FIRE_WEAPON]   = SDL_SCANCODE_SPACE;
+    input_mapper->key_bindins[ACTION_ATTACK]   = SDL_SCANCODE_SPACE;
     input_mapper->key_bindins[ACTION_USE]           = SDL_SCANCODE_E;
 }
 
@@ -96,6 +96,6 @@ void input_update_state(InputState *input_state, InputMapper *input_mapper, cons
 
         // SDL_Log("raw: %i",raw_keyboard[i]);
         // if key is held down set actopm
-        input_state->active_actions[i] = raw_keyboard[bound_key];
+        input_state->time_out_actions[i] = raw_keyboard[bound_key];
     }
 }

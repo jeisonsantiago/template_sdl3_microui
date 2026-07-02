@@ -48,12 +48,12 @@ int main()
     engine_state->gameplay.update = game_play_state_update;
     engine_state->gameplay.render = game_play_state_render;
 
-    // set gameplay to be the active state
-    engine_state->active_state = engine_state->gameplay;
+    // set gameplay to be the time_out state
+    engine_state->time_out_state = engine_state->gameplay;
 
-    // initialize current active state if set
-    if(engine_state->active_state.on_enter){
-        engine_state->active_state.on_enter(engine_state);
+    // initialize current time_out state if set
+    if(engine_state->time_out_state.on_enter){
+        engine_state->time_out_state.on_enter(engine_state);
     }
 
     // init nuklear
@@ -99,13 +99,14 @@ int main()
 
         /// process raw input
         const bool* key_state = SDL_GetKeyboardState(NULL);
+        engine_state->previous_input_state = engine_state->input_state;
         input_update_state(&engine_state->input_state,&engine_state->input_mapper,key_state);
 
         while (accumulator >= FIXED_TIME_STEP) {
             // update(engine_state, FIXED_TIME_STEP);
 
-            if(engine_state->active_state.update){
-                engine_state->active_state.update(FIXED_TIME_STEP,engine_state);
+            if(engine_state->time_out_state.update){
+                engine_state->time_out_state.update(FIXED_TIME_STEP,engine_state);
             }
 
             accumulator -= FIXED_TIME_STEP;
@@ -113,7 +114,7 @@ int main()
 
         /// render
         // render(engine_state);
-        if(engine_state->active_state.render){
+        if(engine_state->time_out_state.render){
 
             // set background collor
             SDL_SetRenderDrawColor(engine_state->renderer,30,30,30,SDL_ALPHA_OPAQUE);
@@ -124,7 +125,7 @@ int main()
             /// ----------------------------------------------------
             ///     DRAW CALLS GOES HERE (MENU AND GAMEPLAY)
             /// ----------------------------------------------------
-            engine_state->active_state.render(engine_state);
+            engine_state->time_out_state.render(engine_state);
             /// ----------------------------------------------------
             ///
 
@@ -165,7 +166,7 @@ int main()
     }
 
     // on exit state
-    engine_state->active_state.on_exit(engine_state);
+    engine_state->time_out_state.on_exit(engine_state);
 
     // destroy window and shut down
     if(engine_state->renderer != NULL){

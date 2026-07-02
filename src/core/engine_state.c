@@ -99,7 +99,7 @@ void engine_state_init(EngineState *self)
     engine_state_init_microui(self);
 
     // clear current state set to NULL
-    game_state_init(&self->active_state);
+    game_state_init(&self->time_out_state);
     game_state_init(&self->gameplay);
     game_state_init(&self->menu);
 }
